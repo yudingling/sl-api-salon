@@ -1,0 +1,29 @@
+server:
+  port: 61001
+  
+spring:
+  application:
+    name: @appName@
+    version: @appVersion@
+  cloud:
+    config:
+      label: @profileActive@
+      profile: @appVersion@
+      discovery:
+        enabled: true
+        serviceId: cfgServer-v0
+      retry:
+        max-attempts: 3
+        
+eureka:
+  instance:
+    preferIpAddress: true
+  client:
+    serviceUrl:
+      defaultZone: @eurekaServerURL@
+
+# localized configuration.
+# spring cloud config also support 'Serving Plain Text', 
+# https://stackoverflow.com/questions/42492763/how-can-i-integrate-spring-cloud-with-logback  @https://github.com/spring-cloud/spring-cloud-config/blob/master/docs/src/main/asciidoc/spring-cloud-config.adoc#serving-plain-text
+logging:
+  config: classpath:logback-@profileActive@.xml
