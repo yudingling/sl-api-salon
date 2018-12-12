@@ -3,7 +3,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.zeasn</groupId>
+	<groupId>com.sl</groupId>
 	<artifactId>${appName}</artifactId>
 	<version>${appVersion}</version>
 	<packaging>jar</packaging>
@@ -19,7 +19,7 @@
 	</parent>
 
 	<properties>
-		<appName>api-salon</appName>
+		<appName>sl-api-salon</appName>
 		<appVersion>0.0.1-SNAPSHOT</appVersion>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
