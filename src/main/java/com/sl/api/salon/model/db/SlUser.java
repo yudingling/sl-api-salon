@@ -17,6 +17,7 @@ public class SlUser implements Serializable {
 	private Integer uActive;
 	private Integer uDisabled;
 	private Long uIcon;
+	private String uAvatar;
 	private Long crtTs;
 	private Long uptTs;
 	
@@ -100,6 +101,14 @@ public class SlUser implements Serializable {
 		this.uIcon = uIcon;
 	}
 
+	public String getuAvatar() {
+		return uAvatar;
+	}
+
+	public void setuAvatar(String uAvatar) {
+		this.uAvatar = uAvatar;
+	}
+
 	public Long getCrtTs() {
 		return crtTs;
 	}
@@ -119,10 +128,18 @@ public class SlUser implements Serializable {
 	public SlUser(){
 		super();
 	}
-
+	
+	public SlUser(Long uId, String uAvatar, Long uptTs){
+		super();
+		this.uId = uId;
+		this.uAvatar = uAvatar;
+		this.uptTs = uptTs;
+	}
+	
 	public SlUser(Long uId, String bdId, String uNm, String uPhone,
 			String uEmail, String uPwd, String roleId, Integer uActive,
-			Integer uDisabled, Long uIcon, Long crtTs, Long uptTs) {
+			Integer uDisabled, Long uIcon, String uAvatar, Long crtTs,
+			Long uptTs) {
 		super();
 		this.uId = uId;
 		this.bdId = bdId;
@@ -134,6 +151,7 @@ public class SlUser implements Serializable {
 		this.uActive = uActive;
 		this.uDisabled = uDisabled;
 		this.uIcon = uIcon;
+		this.uAvatar = uAvatar;
 		this.crtTs = crtTs;
 		this.uptTs = uptTs;
 	}
