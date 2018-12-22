@@ -1,8 +1,10 @@
 package com.sl.api.salon.model;
 
 import java.io.Serializable;
+import java.util.List;
 
 import com.sl.api.salon.model.db.SlShop;
+import com.sl.api.salon.model.db.SlShopHoliday;
 
 public class ShopInfo implements Serializable {
 	private static final long serialVersionUID = -1114508358837642398L;
@@ -14,6 +16,18 @@ public class ShopInfo implements Serializable {
 	private Double shopLttd;
 	private String shopLocation;
 	private Long shopIcon;
+	/**
+	 * start service time ( 10.5 means 10:30)
+	 */
+	private Double shopStm;
+	/**
+	 * end service time ( 22.5 means 22:30)
+	 */
+	private Double shopEtm;
+	/**
+	 * out of service time
+	 */
+	private List<SlShopHoliday> holidays;
 	
 	public Long getShopId() {
 		return shopId;
@@ -57,13 +71,35 @@ public class ShopInfo implements Serializable {
 	public void setShopIcon(Long shopIcon) {
 		this.shopIcon = shopIcon;
 	}
+	public Double getShopStm() {
+		return shopStm;
+	}
+
+	public void setShopStm(Double shopStm) {
+		this.shopStm = shopStm;
+	}
+
+	public Double getShopEtm() {
+		return shopEtm;
+	}
+
+	public void setShopEtm(Double shopEtm) {
+		this.shopEtm = shopEtm;
+	}
+	public List<SlShopHoliday> getHolidays() {
+		return holidays;
+	}
+	public void setHolidays(List<SlShopHoliday> holidays) {
+		this.holidays = holidays;
+	}
 	
 	public ShopInfo(){
 		super();
 	}
 	
 	public ShopInfo(Long shopId, String shopNm, String bdId, Double shopLgtd,
-			Double shopLttd, String shopLocation, Long shopIcon) {
+			Double shopLttd, String shopLocation, Long shopIcon,
+			Double shopStm, Double shopEtm) {
 		super();
 		this.shopId = shopId;
 		this.shopNm = shopNm;
@@ -72,9 +108,11 @@ public class ShopInfo implements Serializable {
 		this.shopLttd = shopLttd;
 		this.shopLocation = shopLocation;
 		this.shopIcon = shopIcon;
+		this.shopStm = shopStm;
+		this.shopEtm = shopEtm;
 	}
 	
-	public ShopInfo(SlShop shop) {
+	public ShopInfo(SlShop shop, List<SlShopHoliday> holidays) {
 		super();
 		this.shopId = shop.getShopId();
 		this.shopNm = shop.getShopNm();
@@ -83,5 +121,9 @@ public class ShopInfo implements Serializable {
 		this.shopLttd = shop.getShopLttd();
 		this.shopLocation = shop.getShopLocation();
 		this.shopIcon = shop.getShopIcon();
+		this.shopStm = shop.getShopStm();
+		this.shopEtm = shop.getShopEtm();
+		
+		this.holidays = holidays;
 	}
 }

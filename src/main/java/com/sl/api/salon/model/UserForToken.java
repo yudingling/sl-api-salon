@@ -1,4 +1,4 @@
-package com.sl.api.salon.model.token;
+package com.sl.api.salon.model;
 
 import java.io.Serializable;
 

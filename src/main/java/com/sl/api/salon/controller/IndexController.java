@@ -1,14 +1,17 @@
 package com.sl.api.salon.controller;
 
 import java.io.IOException;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import com.sl.api.salon.model.token.UserForToken;
+
+import com.sl.api.salon.model.UserForToken;
 import com.sl.api.salon.service.TokenService;
 import com.zeasn.common.model.result.ApiResult;
 

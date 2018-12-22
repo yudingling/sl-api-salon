@@ -6,9 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.sl.api.salon.mapper.SlUserLevelMapper;
@@ -29,9 +27,8 @@ public class MemberService {
 	private SlUserVoucherMapper slUserVoucherMapper;
 	@Autowired
 	private SlUserLevelMapper slUserLevelMapper;
-	
-	@Value("${salon.file}")
-	private String fileUrl;
+	@Autowired
+	private CommonService commonService;
 	
 	public MemberInfo getInfo(SToken token){
 		long ts = System.currentTimeMillis();
@@ -45,7 +42,7 @@ public class MemberService {
 		return new MemberInfo(
 				user.getuId(), 
 				user.getuNm(), 
-				this.getIconUrl(user), 
+				this.commonService.getIconUrl(user), 
 				CollectionUtils.isNotEmpty(levels) ? levels.get(0) : null, 
 				this.getVouchers(vouchers));
 	}
@@ -67,16 +64,5 @@ public class MemberService {
 		}
 		
 		return new ArrayList<>(result.values());
-	}
-	
-	private String getIconUrl(SlUser user){
-		if(StringUtils.isNotEmpty(user.getuAvatar())){
-			return user.getuAvatar();
-			
-		}else{
-			Long fileId = user.getuIcon() != null ? user.getuIcon() : 0l;
-			
-			return String.format("%s/icon/%d", this.fileUrl, fileId);
-		}
 	}
 }

@@ -2,8 +2,6 @@ package com.sl.api.salon.model;
 
 import java.io.Serializable;
 
-import com.sl.api.salon.model.token.UserForToken;
-
 public class SToken implements Serializable {
 	private static final long serialVersionUID = -3597832464940512081L;
 	

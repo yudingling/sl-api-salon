@@ -3,11 +3,13 @@ package com.sl.api.salon.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
 
 import com.sl.api.salon.model.db.SlBrand;
 import com.sl.api.salon.model.db.SlShop;
+import com.sl.api.salon.model.db.SlShopHoliday;
 
 public class BrandInfo implements Serializable {
 	private static final long serialVersionUID = -7442285215862675086L;
@@ -62,7 +64,7 @@ public class BrandInfo implements Serializable {
 		this.recommend = recommend;
 	}
 	
-	public BrandInfo(SlBrand brand, List<SlShop> shops, double lgtd, double lttd) {
+	public BrandInfo(SlBrand brand, List<SlShop> shops, Map<Long, List<SlShopHoliday>> holidayMap, double lgtd, double lttd) {
 		super();
 		this.bdId = brand.getBdId();
 		this.bdNm = brand.getBdNm();
@@ -73,7 +75,7 @@ public class BrandInfo implements Serializable {
 			List<DistanceCmp> distance = new ArrayList<>();
 			
 			for(SlShop item : shops){
-				ShopInfo info = new ShopInfo(item);
+				ShopInfo info = new ShopInfo(item, holidayMap.get(item.getShopId()));
 				this.shops.add(info);
 				
 				distance.add(new DistanceCmp(info, CalcDistance.getDistance(lgtd, lttd, item.getShopLgtd(), item.getShopLttd())));
