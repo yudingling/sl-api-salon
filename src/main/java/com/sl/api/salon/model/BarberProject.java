@@ -3,6 +3,7 @@ package com.sl.api.salon.model;
 import java.io.Serializable;
 import java.util.Set;
 
+import com.sl.api.salon.model.db.SlBarberProject;
 import com.sl.api.salon.model.db.SlProject;
 
 public class BarberProject implements Serializable {
@@ -64,6 +65,15 @@ public class BarberProject implements Serializable {
 		this.pjId = project.getPjId();
 		this.pjNm = project.getPjNm();
 		this.pjPrice = project.getPjPrice();
+		this.pjHour = project.getPjHour();
+		this.pdIds = pdIds;
+	}
+	
+	public BarberProject(SlProject project, SlBarberProject bbp, Set<Long> pdIds) {
+		super();
+		this.pjId = project.getPjId();
+		this.pjNm = project.getPjNm();
+		this.pjPrice = bbp.getBbpPrice();
 		this.pjHour = project.getPjHour();
 		this.pdIds = pdIds;
 	}

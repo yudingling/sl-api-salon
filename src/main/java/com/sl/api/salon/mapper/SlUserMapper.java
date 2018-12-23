@@ -17,4 +17,7 @@ public interface SlUserMapper extends MyMapper<SlUser> {
 	
 	@Select("select a.* from sl_user a inner join sl_user_barber b on a.u_id = b.u_id and b.shop_id = #{shopId} and b.bd_id = #{bdId} and a.u_active=1 and a.u_disabled=0 ")
 	List<SlUser> getBarbers(@Param("bdId") String bdId, @Param("shopId") Long shopId);
+	
+	@Select("select a.* from sl_user a inner join sl_user_barber b on a.u_id = b.u_id and b.shop_id = #{shopId} and b.u_id = #{barberId} and a.u_active=1 and a.u_disabled=0 ")
+	List<SlUser> getBarber(@Param("shopId") Long shopId, @Param("barberId") Long barberId);
 }

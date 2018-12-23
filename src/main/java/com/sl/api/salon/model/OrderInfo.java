@@ -1,18 +1,19 @@
-package com.sl.api.salon.model.db;
+package com.sl.api.salon.model;
 
 import java.io.Serializable;
+import java.util.List;
 
-import javax.persistence.Id;
+import com.sl.api.salon.model.db.SlOrder;
 
-public class SlOrder implements Serializable {
-	private static final long serialVersionUID = -9211341692344770466L;
-	@Id
+public class OrderInfo implements Serializable {
+	private static final long serialVersionUID = 5236094613690348130L;
+	
 	private Long odId;
-	private Long rvId;
 	private Long shopId;
 	private Long odUid;
-	private Long odBarberUid;
-	private Long pjId;
+	private BarberInfo barber;
+	private BarberProject project;
+	private List<ProductInfo> products;
 	private Long odStm;
 	private Long odEtm;
 	private Double odPjPrice;
@@ -26,20 +27,12 @@ public class SlOrder implements Serializable {
 	private Long odPaiedTs;
 	private String odPaiedTp;
 	private Integer odComplaint;
-	private Long crtTs;
-	private Long uptTs;
 	
 	public Long getOdId() {
 		return odId;
 	}
 	public void setOdId(Long odId) {
 		this.odId = odId;
-	}
-	public Long getRvId() {
-		return rvId;
-	}
-	public void setRvId(Long rvId) {
-		this.rvId = rvId;
 	}
 	public Long getShopId() {
 		return shopId;
@@ -53,17 +46,23 @@ public class SlOrder implements Serializable {
 	public void setOdUid(Long odUid) {
 		this.odUid = odUid;
 	}
-	public Long getOdBarberUid() {
-		return odBarberUid;
+	public BarberInfo getBarber() {
+		return barber;
 	}
-	public void setOdBarberUid(Long odBarberUid) {
-		this.odBarberUid = odBarberUid;
+	public void setBarber(BarberInfo barber) {
+		this.barber = barber;
 	}
-	public Long getPjId() {
-		return pjId;
+	public BarberProject getProject() {
+		return project;
 	}
-	public void setPjId(Long pjId) {
-		this.pjId = pjId;
+	public void setProject(BarberProject project) {
+		this.project = project;
+	}
+	public List<ProductInfo> getProducts() {
+		return products;
+	}
+	public void setProducts(List<ProductInfo> products) {
+		this.products = products;
 	}
 	public Long getOdStm() {
 		return odStm;
@@ -143,36 +142,24 @@ public class SlOrder implements Serializable {
 	public void setOdComplaint(Integer odComplaint) {
 		this.odComplaint = odComplaint;
 	}
-	public Long getCrtTs() {
-		return crtTs;
-	}
-	public void setCrtTs(Long crtTs) {
-		this.crtTs = crtTs;
-	}
-	public Long getUptTs() {
-		return uptTs;
-	}
-	public void setUptTs(Long uptTs) {
-		this.uptTs = uptTs;
-	}
 	
-	public SlOrder(){
+	public OrderInfo(){
 		super();
 	}
 	
-	public SlOrder(Long odId, Long rvId, Long shopId, Long odUid,
-			Long odBarberUid, Long pjId, Long odStm, Long odEtm,
-			Double odPjPrice, Double odPdPrice, Double odTotalPrice,
-			Double odDiscount, Double odOfferPrice, Double odVoucherPrice,
-			Double odPayPrice, Integer odPaied, Long odPaiedTs,
-			String odPaiedTp, Integer odComplaint, Long crtTs, Long uptTs) {
+	public OrderInfo(Long odId, Long shopId, Long odUid, BarberInfo barber,
+			BarberProject project, List<ProductInfo> products, Long odStm,
+			Long odEtm, Double odPjPrice, Double odPdPrice,
+			Double odTotalPrice, Double odDiscount, Double odOfferPrice,
+			Double odVoucherPrice, Double odPayPrice, Integer odPaied,
+			Long odPaiedTs, String odPaiedTp, Integer odComplaint) {
 		super();
 		this.odId = odId;
-		this.rvId = rvId;
 		this.shopId = shopId;
 		this.odUid = odUid;
-		this.odBarberUid = odBarberUid;
-		this.pjId = pjId;
+		this.barber = barber;
+		this.project = project;
+		this.products = products;
 		this.odStm = odStm;
 		this.odEtm = odEtm;
 		this.odPjPrice = odPjPrice;
@@ -186,8 +173,25 @@ public class SlOrder implements Serializable {
 		this.odPaiedTs = odPaiedTs;
 		this.odPaiedTp = odPaiedTp;
 		this.odComplaint = odComplaint;
-		this.crtTs = crtTs;
-		this.uptTs = uptTs;
 	}
 	
+	public OrderInfo(SlOrder order) {
+		super();
+		this.odId = order.getOdId();
+		this.shopId = order.getShopId();
+		this.odUid = order.getOdUid();
+		this.odStm = order.getOdStm();
+		this.odEtm = order.getOdEtm();
+		this.odPjPrice = order.getOdPjPrice();
+		this.odPdPrice = order.getOdPdPrice();
+		this.odTotalPrice = order.getOdTotalPrice();
+		this.odDiscount = order.getOdDiscount();
+		this.odOfferPrice = order.getOdOfferPrice();
+		this.odVoucherPrice = order.getOdVoucherPrice();
+		this.odPayPrice = order.getOdPayPrice();
+		this.odPaied = order.getOdPaied();
+		this.odPaiedTs = order.getOdPaiedTs();
+		this.odPaiedTp = order.getOdPaiedTp();
+		this.odComplaint = order.getOdComplaint();
+	}
 }

@@ -119,7 +119,7 @@ public class BarberService {
 			for(SlBarberProject tmp : bbProjects){
 				SlProject pj = projectMap.get(tmp.getPjId());
 				if(pj != null){
-					BarberProject bp = new BarberProject(pj, pjpMap.get(tmp.getPjId()));
+					BarberProject bp = new BarberProject(pj, tmp, pjpMap.get(tmp.getPjId()));
 					projects.put(bp.getPjId(), bp);
 				}
 			}
