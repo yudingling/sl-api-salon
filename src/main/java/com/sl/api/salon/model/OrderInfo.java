@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import com.sl.api.salon.model.db.SlOrder;
+import com.sl.api.salon.model.db.SlOrderEvaluation;
 
 public class OrderInfo implements Serializable {
 	private static final long serialVersionUID = 5236094613690348130L;
@@ -27,6 +28,7 @@ public class OrderInfo implements Serializable {
 	private Long odPaiedTs;
 	private String odPaiedTp;
 	private Integer odComplaint;
+	private List<SlOrderEvaluation> evaList;
 	
 	public Long getOdId() {
 		return odId;
@@ -142,6 +144,12 @@ public class OrderInfo implements Serializable {
 	public void setOdComplaint(Integer odComplaint) {
 		this.odComplaint = odComplaint;
 	}
+	public List<SlOrderEvaluation> getEvaList() {
+		return evaList;
+	}
+	public void setEvaList(List<SlOrderEvaluation> evaList) {
+		this.evaList = evaList;
+	}
 	
 	public OrderInfo(){
 		super();
@@ -152,7 +160,7 @@ public class OrderInfo implements Serializable {
 			Long odEtm, Double odPjPrice, Double odPdPrice,
 			Double odTotalPrice, Double odDiscount, Double odOfferPrice,
 			Double odVoucherPrice, Double odPayPrice, Integer odPaied,
-			Long odPaiedTs, String odPaiedTp, Integer odComplaint) {
+			Long odPaiedTs, String odPaiedTp, Integer odComplaint, List<SlOrderEvaluation> evaList) {
 		super();
 		this.odId = odId;
 		this.shopId = shopId;
@@ -173,6 +181,7 @@ public class OrderInfo implements Serializable {
 		this.odPaiedTs = odPaiedTs;
 		this.odPaiedTp = odPaiedTp;
 		this.odComplaint = odComplaint;
+		this.evaList = evaList;
 	}
 	
 	public OrderInfo(SlOrder order) {

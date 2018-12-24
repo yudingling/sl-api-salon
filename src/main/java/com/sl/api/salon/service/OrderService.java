@@ -1,8 +1,11 @@
 package com.sl.api.salon.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
 import com.sl.api.salon.mapper.SlBarberProjectMapper;
+import com.sl.api.salon.mapper.SlOrderEvaluationMapper;
 import com.sl.api.salon.mapper.SlOrderMapper;
 import com.sl.api.salon.mapper.SlOrderProductMapper;
 import com.sl.api.salon.mapper.SlProductMapper;
@@ -22,12 +26,14 @@ import com.sl.api.salon.mapper.SlUserLevelMapper;
 import com.sl.api.salon.mapper.SlUserMapper;
 import com.sl.api.salon.model.BarberInfo;
 import com.sl.api.salon.model.BarberProject;
+import com.sl.api.salon.model.HistoryOrder;
 import com.sl.api.salon.model.OrderInfo;
 import com.sl.api.salon.model.ProductInfo;
 import com.sl.api.salon.model.SToken;
 import com.sl.api.salon.model.UserLevelInfo;
 import com.sl.api.salon.model.db.SlBarberProject;
 import com.sl.api.salon.model.db.SlOrder;
+import com.sl.api.salon.model.db.SlOrderEvaluation;
 import com.sl.api.salon.model.db.SlOrderProduct;
 import com.sl.api.salon.model.db.SlProduct;
 import com.sl.api.salon.model.db.SlProject;
@@ -55,11 +61,85 @@ public class OrderService {
 	@Autowired
 	private SlOrderProductMapper slOrderProductMapper;
 	@Autowired
+	private SlOrderEvaluationMapper slOrderEvaluationMapper;
+	@Autowired
 	private SlUserMapper slUserMapper;
 	@Autowired
 	private SnowFlakeApi snowFlakeApi;
 	@Autowired
 	private CommonService commonService;
+	
+	public List<HistoryOrder> getHistoryOrders(SToken token, Integer startIndex, Integer size){
+		List<HistoryOrder> orders = this.slOrderMapper.getHistoryOrders(token.getUserId(), startIndex, size);
+		
+		if(CollectionUtils.isNotEmpty(orders)){
+			this.setEvaValue(orders);
+		}
+		
+		return orders;
+	}
+	
+	private void setEvaValue(List<HistoryOrder> orders){
+		Set<Long> odIds = orders.stream().map(HistoryOrder::getOdId).collect(Collectors.toSet());
+		
+		Example example = new Example(SlOrderEvaluation.class);
+	    example.createCriteria().andIn("odId", odIds);
+	    
+	    List<SlOrderEvaluation> data = this.slOrderEvaluationMapper.selectByExample(example);
+	    if(CollectionUtils.isNotEmpty(data)){
+	    	Map<Long, SlOrderEvaluation> evaMap = new HashMap<>();
+	    	
+	    	for(SlOrderEvaluation item : data){
+	    		SlOrderEvaluation tmp = evaMap.get(item.getOdId());
+	    		if(tmp == null || tmp.getCrtTs() < item.getCrtTs()){
+	    			evaMap.put(item.getOdId(), item);
+	    		}
+	    	}
+	    	
+	    	for(HistoryOrder od : orders){
+	    		SlOrderEvaluation tmp = evaMap.get(od.getOdId());
+	    		if(tmp != null){
+	    			od.setOdEva(tmp.getOdevaVal());
+	    		}
+	    	}
+	    }
+	}
+	
+	public OrderInfo getHistoryOrder(SToken token, Long odId){
+		Example example = new Example(SlOrder.class);
+	    example.createCriteria().andEqualTo("odId", odId).andEqualTo("odUid", token.getUserId()).andEqualTo("odPaied", 1);
+	    
+	    List<SlOrder> data = this.slOrderMapper.selectByExample(example);
+	    if(CollectionUtils.isNotEmpty(data)){
+	    	SlOrder order = data.get(0);
+	    	
+	    	List<SlProduct> products = this.slOrderProductMapper.getProductFromOrder(order.getOdId());
+	    	
+	    	SlUser barber = this.slUserMapper.selectByPrimaryKey(order.getOdBarberUid());
+	    	if(barber == null){
+	    		return null;
+	    	}
+	    	
+	    	SlProject project = this.slProjectMapper.selectByPrimaryKey(order.getPjId());
+	    	if(project == null){
+	    		return null;
+	    	}
+	    	
+	    	Example evaExample = new Example(SlOrderEvaluation.class);
+		    example.createCriteria().andEqualTo("odId", odId);
+		    List<SlOrderEvaluation> evaList = this.slOrderEvaluationMapper.selectByExample(evaExample);
+	    	
+	    	return this.getInfo(
+	    			order, 
+	    			barber,
+	    			project,
+	    			products,
+	    			evaList);
+	    	
+	    }else{
+	    	return null;
+	    }
+	}
 	
 	@Transactional(rollbackFor = Exception.class)
 	public OrderInfo createOrder(SToken token, Long rvId, Set<Long> pdIds){
@@ -94,7 +174,7 @@ public class OrderService {
 		
 		SlOrder order = this.newOrder(reservation, pjPrice, products);
 		
-		return order != null ? this.getInfo(order, barber, project, products) : null;
+		return order != null ? this.getInfo(order, barber, project, products, null) : null;
 	}
 	
 	public OrderInfo getCurrentOrder(SToken token){
@@ -121,14 +201,15 @@ public class OrderService {
 	    			order, 
 	    			barber,
 	    			project,
-	    			products);
+	    			products,
+	    			null);
 	    	
 	    }else{
 	    	return null;
 	    }
 	}
 	
-	private OrderInfo getInfo(SlOrder order, SlUser barber, SlProject project, List<SlProduct> products){
+	private OrderInfo getInfo(SlOrder order, SlUser barber, SlProject project, List<SlProduct> products, List<SlOrderEvaluation> evaList){
 		OrderInfo info = new OrderInfo(order);
 		
 		BarberInfo bbInfo = new BarberInfo(barber, this.commonService.getIconUrl(barber), null);
@@ -146,6 +227,8 @@ public class OrderService {
 		info.setBarber(bbInfo);
 		info.setProject(barberProject);
 		info.setProducts(pdInfos);
+		
+		info.setEvaList(evaList);
 		
 		return info;
 	}
