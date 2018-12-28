@@ -117,7 +117,8 @@ public class TokenService implements IWriteBack<Object> {
 		
 		return tokenStr;
 	}
-
+	
+	@Transactional(rollbackFor = Exception.class)
 	@Override
 	public boolean writeBack(Object data) {
 		if(data instanceof SlUser){
