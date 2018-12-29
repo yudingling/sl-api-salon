@@ -113,10 +113,9 @@ public class LevelService implements IWriteBack<SlUserLevelOrder> {
 				order.getUlodDiscount(),
 				1, ts, ts);
 		
-		this.slUserLevelMapper.insert(obj);
+		this.slUserLevelMapper.insertUpdate(obj);
 	}
 	
-	@Transactional(rollbackFor = Exception.class)
 	@Override
 	public boolean writeBack(SlUserLevelOrder data) {
 		this.levelUp(data);
