@@ -15,7 +15,7 @@ import com.zeasn.common.switchcall.EnableAssertSwitch;
 @MySpringBootApplication(scanBasePackages = {"com.sl.api.salon", "com.zeasn.common.component.global"})
 @EnableEurekaClient
 @MyEnableFeignClients
-@EnableTransactionManagement
+@EnableTransactionManagement(proxyTargetClass = true)
 @MapperScan(basePackages = {"com.sl.**.mapper"})
 @ServletComponentScan
 @EnableAssertSwitch
