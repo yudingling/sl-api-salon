@@ -19,7 +19,7 @@ public class BarbersController {
 	private BarberService barberService;
 	
 	public ApiResult get(@RequestParam Long shopId, FilterHttpServletRequest request){
-		Assert.isNull(shopId, "shopId should not be null or empty");
+		Assert.notNull(shopId, "shopId should not be null or empty");
 		
 		BarberReservation br = this.barberService.getBarbers(request.getToken(), shopId);
 		

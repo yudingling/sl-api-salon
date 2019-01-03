@@ -21,8 +21,8 @@ public class EvaluationController {
 	
 	@RequestMapping(method = RequestMethod.POST)
 	public ApiResult post(@RequestParam Long odId, @RequestParam Integer evaVal, @RequestParam(required = false) String evaDesc, FilterHttpServletRequest request){
-		Assert.isNull(odId, "odId should not be null or empty");
-		Assert.isNull(evaVal, "evaVal should not be null or empty");
+		Assert.notNull(odId, "odId should not be null or empty");
+		Assert.notNull(evaVal, "evaVal should not be null or empty");
 		
 		if(evaVal <= 0 || evaVal > 5){
 			throw new IllegalArgumentException("evaVal must between 1~5");

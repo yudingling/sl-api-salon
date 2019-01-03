@@ -23,8 +23,8 @@ public class OrdersController {
 	private OrderService orderService;
 	
 	public ApiResult get(@RequestParam Integer startIndex, @RequestParam Integer size, FilterHttpServletRequest request){
-		Assert.isNull(startIndex, "startIndex should not be null or empty");
-		Assert.isNull(size, "size should not be null or empty");
+		Assert.notNull(startIndex, "startIndex should not be null or empty");
+		Assert.notNull(size, "size should not be null or empty");
 		
 		List<HistoryOrder> orders = this.orderService.getHistoryOrders(request.getToken(), startIndex, size);
 		
@@ -33,7 +33,7 @@ public class OrdersController {
 	
 	@RequestMapping("/{odId}")
 	public ApiResult get(@PathVariable Long odId, FilterHttpServletRequest request){
-		Assert.isNull(odId, "odId should not be null or empty");
+		Assert.notNull(odId, "odId should not be null or empty");
 		
 		OrderInfo info = this.orderService.getHistoryOrder(request.getToken(), odId);
 		

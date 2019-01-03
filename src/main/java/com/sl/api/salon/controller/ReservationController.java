@@ -27,10 +27,10 @@ public class ReservationController {
 	@RequestMapping(method = RequestMethod.POST)
 	public ApiResult post(@RequestParam Long shopId, @RequestParam Long pjId, @RequestParam Long barberId, 
 			@RequestParam(name = "pdIds[]", required = false) Set<Long> pdIds, @RequestParam Long stm, FilterHttpServletRequest request){
-		Assert.isNull(shopId, "shopId should not be null or empty");
-		Assert.isNull(pjId, "pjId should not be null or empty");
-		Assert.isNull(barberId, "barberId should not be null or empty");
-		Assert.isNull(stm, "stm should not be null or empty");
+		Assert.notNull(shopId, "shopId should not be null or empty");
+		Assert.notNull(pjId, "pjId should not be null or empty");
+		Assert.notNull(barberId, "barberId should not be null or empty");
+		Assert.notNull(stm, "stm should not be null or empty");
 		
 		SToken token = request.getToken();
 		
@@ -55,7 +55,7 @@ public class ReservationController {
 	
 	@RequestMapping(method = RequestMethod.DELETE)
 	public ApiResult delete(@RequestParam Long rvId, FilterHttpServletRequest request){
-		Assert.isNull(rvId, "rvId should not be null or empty");
+		Assert.notNull(rvId, "rvId should not be null or empty");
 		
 		boolean deleted = this.reservationService.deleteReservation(request.getToken(), rvId);
 		

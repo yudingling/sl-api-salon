@@ -14,6 +14,7 @@ public class SlBarberShield implements Serializable {
 	private String bbtDesc;
 	private Long crtTs;
 	private Long uptTs;
+	
 	public Long getBbtId() {
 		return bbtId;
 	}

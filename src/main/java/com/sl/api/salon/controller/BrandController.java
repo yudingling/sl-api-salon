@@ -19,8 +19,8 @@ public class BrandController {
 	private BrandService brandService;
 	
 	public ApiResult get(@RequestParam Double lgtd, @RequestParam Double lttd, FilterHttpServletRequest request){
-		Assert.isNull(lgtd, "lgtd should not be null or empty");
-		Assert.isNull(lttd, "lttd should not be null or empty");
+		Assert.notNull(lgtd, "lgtd should not be null or empty");
+		Assert.notNull(lttd, "lttd should not be null or empty");
 		
 		BrandInfo brandInfo = this.brandService.getBrandInfo(request.getToken(), lgtd, lttd);
 		

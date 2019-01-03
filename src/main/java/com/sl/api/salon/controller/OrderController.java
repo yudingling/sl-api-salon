@@ -29,7 +29,7 @@ public class OrderController {
 	
 	@RequestMapping(method = RequestMethod.POST)
 	public ApiResult post(@RequestParam Long rvId, @RequestParam(name = "pdIds[]", required = false) Set<Long> pdIds, FilterHttpServletRequest request){
-		Assert.isNull(rvId, "rvId should not be null or empty");
+		Assert.notNull(rvId, "rvId should not be null or empty");
 		
 		SToken token = request.getToken();
 		

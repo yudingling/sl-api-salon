@@ -21,7 +21,7 @@ public class LevelUpController {
 	
 	@RequestMapping(method = RequestMethod.POST)
 	public ApiResult createOrder(@RequestParam Long levelId, FilterHttpServletRequest request){
-		Assert.isNull(levelId, "levelId should not be null or empty");
+		Assert.notNull(levelId, "levelId should not be null or empty");
 		
 		SlUserLevelOrder order = this.levelService.createLevelUpOrder(request.getToken(), levelId);
 		if(order == null){
@@ -35,7 +35,7 @@ public class LevelUpController {
 	
 	@RequestMapping(method = RequestMethod.PUT)
 	public ApiResult paied(@RequestParam Long ulodId, FilterHttpServletRequest request){
-		Assert.isNull(ulodId, "ulodId should not be null or empty");
+		Assert.notNull(ulodId, "ulodId should not be null or empty");
 		
 		if(this.levelService.levelUpPaied(request.getToken(), ulodId)){
 			return ApiResult.success();
