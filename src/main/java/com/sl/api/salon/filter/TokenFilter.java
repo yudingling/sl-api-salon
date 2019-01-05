@@ -7,12 +7,10 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.context.ApplicationContext;
-import org.springframework.core.annotation.Order;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
@@ -22,8 +20,6 @@ import com.sl.api.salon.util.Constant;
 import com.zeasn.common.model.result.ApiError;
 import com.zeasn.common.model.result.ApiResult;
 
-@Order(1)
-@WebFilter(urlPatterns = "/api/*")
 public class TokenFilter extends BaseFilter {
 	private TokenService tokenService;
 	

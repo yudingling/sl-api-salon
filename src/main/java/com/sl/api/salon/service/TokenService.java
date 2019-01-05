@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,25 +38,22 @@ public class TokenService implements IWriteBack<Object> {
 	@Autowired
 	private Daemon daemon;
 	
-	@Value("${salon.web}")
-	private String webUrl;
-	
-	public String getRedirect(UserForToken user, String tokenStr){
+	public String getRedirect(String domain, UserForToken user, String tokenStr){
 		UserType tp = UserType.valueOf(user.getRoleId());
 		switch(tp){
 			case BARBER:
-				return String.format("%s/barber.html?token=%s", this.webUrl, tokenStr);
+				return String.format("%s/pages/barber.html?token=%s", domain, tokenStr);
 				
 			case MEMBER:
-				return String.format("%s/member.html?token=%s", this.webUrl, tokenStr);
+				return String.format("%s/pages/member.html?token=%s", domain, tokenStr);
 			
 			default:
-				return this.getRedirectForError();
+				return this.getRedirectForError(domain);
 		}
 	}
 	
-	public String getRedirectForError(){
-		return this.webUrl + "static/error.html";
+	public String getRedirectForError(String domain){
+		return domain + "/static/error.html";
 	}
 	
 	public SToken getToken(String token){

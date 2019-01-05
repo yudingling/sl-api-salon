@@ -9,12 +9,10 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.context.ApplicationContext;
-import org.springframework.core.annotation.Order;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import com.sl.api.salon.model.SApiError;
@@ -22,8 +20,6 @@ import com.sl.api.salon.model.UserType;
 import com.sl.api.salon.service.AuthService;
 import com.zeasn.common.model.result.ApiResult;
 
-@Order(2)
-@WebFilter(urlPatterns = "/api/*")
 public class AuthFilter extends BaseFilter {
 	private AuthService authService;
 	private Map<UserType, Set<String>> roleApis;

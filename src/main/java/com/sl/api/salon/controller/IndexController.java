@@ -23,6 +23,8 @@ public class IndexController {
 	
 	public ApiResult get(@RequestParam String brandId, @RequestParam String unionId, @RequestParam String nickName, 
 			@RequestParam String avatarUrl, @RequestParam String phoneNumber, HttpServletRequest request, HttpServletResponse response) throws IOException{
+		String domain = this.getDomain(request);
+		
 		try{
 			Assert.hasText(brandId, "brandId should not be null or empty");
 			Assert.hasText(unionId, "unionId should not be null or empty");
@@ -43,12 +45,17 @@ public class IndexController {
 			
 			String tokenStr = this.tokenService.register(user);
 			
-			response.sendRedirect(this.tokenService.getRedirect(user, tokenStr));
+			response.sendRedirect(this.tokenService.getRedirect(domain, user, tokenStr));
 			
 		}catch(Exception ex){
-			response.sendRedirect(this.tokenService.getRedirectForError());
+			response.sendRedirect(this.tokenService.getRedirectForError(domain));
 		}
 		
 		return ApiResult.success();
+	}
+	
+	private String getDomain(HttpServletRequest request){
+		StringBuffer url = request.getRequestURL();
+		return url.delete(url.length() - request.getRequestURI().length(), url.length()).toString();
 	}
 }

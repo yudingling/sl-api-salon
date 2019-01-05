@@ -23,22 +23,8 @@
 		</encoder>
 　　</appender>
 
-	<appender name="logstash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
-		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-            <level>info</level>
-        </filter>
-        <filter class="com.zeasn.common.log.appender.LogTypeFilter">
-            <types>RUNTIME</types>
-        </filter>
-        <destination>10.8.10.100:4560</destination>
-        <keepAliveDuration>1 minutes</keepAliveDuration>
-        <!-- encoder is required -->
-        <encoder charset="UTF-8" class="net.logstash.logback.encoder.LogstashEncoder" />
-    </appender>
-
 	<root level="DEBUG">
 		<appender-ref ref="infoFile" />
 		<appender-ref ref="console" />
-		<!-- <appender-ref ref="logstash" /> -->
 	</root>
 </configuration>
