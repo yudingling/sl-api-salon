@@ -14,14 +14,17 @@ import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
 
 import com.sl.api.salon.mapper.SlBrandMapper;
+import com.sl.api.salon.mapper.SlShopEventMapper;
 import com.sl.api.salon.mapper.SlShopHolidayMapper;
 import com.sl.api.salon.mapper.SlShopImageMapper;
 import com.sl.api.salon.mapper.SlShopMapper;
 import com.sl.api.salon.model.BrandInfo;
 import com.sl.api.salon.model.SToken;
+import com.sl.api.salon.model.ShopEvent;
 import com.sl.api.salon.model.ShopHoliday;
 import com.sl.api.salon.model.db.SlBrand;
 import com.sl.api.salon.model.db.SlShop;
+import com.sl.api.salon.model.db.SlShopEvent;
 import com.sl.api.salon.model.db.SlShopHoliday;
 import com.sl.api.salon.model.db.SlShopImage;
 
@@ -36,18 +39,23 @@ public class BrandService {
 	@Autowired
 	private SlShopImageMapper slShopImageMapper;
 	@Autowired
+	private SlShopEventMapper slShopEventMapper;
+	@Autowired
 	private CommonService commonService;
 	
 	public BrandInfo getBrandInfo(SToken token, double lgtd, double lttd){
-		SlBrand brand = this.slBrandMapper.selectByPrimaryKey(token.getBrandId());
+		String bdId = token.getBrandId();
 		
-		List<SlShop> shops = this.getShops(token.getBrandId());
-		Map<Long, List<ShopHoliday>> holidayMap = this.getShopHolidays(token.getBrandId());
-		Map<Long, List<String>> imageMap = this.getShopImages(token.getBrandId());
+		SlBrand brand = this.slBrandMapper.selectByPrimaryKey(bdId);
+		
+		List<SlShop> shops = this.getShops(bdId);
+		Map<Long, List<ShopHoliday>> holidayMap = this.getShopHolidays(bdId);
+		Map<Long, List<String>> imageMap = this.getShopImages(bdId);
+		Map<Long, ShopEvent> eventMap = this.getShopEvents(bdId);
 		
 		String brandLogo = this.commonService.getIconUrl(brand);
 		
-		return new BrandInfo(brand, brandLogo, shops, holidayMap, imageMap, lgtd, lttd);
+		return new BrandInfo(brand, brandLogo, shops, holidayMap, imageMap, eventMap, lgtd, lttd);
 	}
 	
 	private List<SlShop> getShops(String bdId){
@@ -61,7 +69,7 @@ public class BrandService {
 	private Map<Long, List<String>> getShopImages(String bdId){
 		Example example = new Example(SlShopImage.class);
 	    example.createCriteria().andEqualTo("bdId", bdId);
-	    example.orderBy("crtTs");
+	    example.orderBy("crtTs").asc();
 	    
 	    List<SlShopImage> images = this.slShopImageMapper.selectByExample(example);
 	    Map<Long, List<String>> imageMap = new HashMap<>();
@@ -82,6 +90,28 @@ public class BrandService {
 		}
 		
 		return imageMap;
+	}
+	
+	private Map<Long, ShopEvent> getShopEvents(String bdId){
+		Example example = new Example(SlShopEvent.class);
+	    example.createCriteria().andEqualTo("bdId", bdId).andEqualTo("eventAvailable", 1).andGreaterThan("eventEtm", System.currentTimeMillis());
+	    example.orderBy("crtTs").desc();
+	    
+	    List<SlShopEvent> events = this.slShopEventMapper.selectByExample(example);
+	    Map<Long, ShopEvent> eventMap = new HashMap<>();
+	    
+	    if(CollectionUtils.isNotEmpty(events)){
+			for(SlShopEvent event : events){
+				if(!eventMap.containsKey(event.getShopId())){
+					String imageUrl = this.commonService.getIconUrl(event);
+					if(StringUtils.isNotEmpty(imageUrl)){
+						eventMap.put(event.getShopId(), new ShopEvent(imageUrl, event.getEventUrl()));
+					}
+				}
+			}
+		}
+		
+		return eventMap;
 	}
 	
 	private Map<Long, List<ShopHoliday>> getShopHolidays(String bdId){

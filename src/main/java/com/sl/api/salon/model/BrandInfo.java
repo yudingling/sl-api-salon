@@ -72,7 +72,8 @@ public class BrandInfo implements Serializable {
 		this.recommendShopIndex = recommendShopIndex;
 	}
 	
-	public BrandInfo(SlBrand brand, String brandLogo, List<SlShop> shops, Map<Long, List<ShopHoliday>> holidayMap, Map<Long, List<String>> imageMap,
+	public BrandInfo(SlBrand brand, String brandLogo, List<SlShop> shops, Map<Long, List<ShopHoliday>> holidayMap, 
+			Map<Long, List<String>> imageMap, Map<Long, ShopEvent> eventMap,
 			double lgtd, double lttd) {
 		super();
 		this.bdId = brand.getBdId();
@@ -85,7 +86,7 @@ public class BrandInfo implements Serializable {
 			List<DistanceCmp> distance = new ArrayList<>();
 			
 			for(SlShop item : shops){
-				ShopInfo info = new ShopInfo(item, holidayMap.get(item.getShopId()), imageMap.get(item.getShopId()));
+				ShopInfo info = new ShopInfo(item, holidayMap.get(item.getShopId()), imageMap.get(item.getShopId()), eventMap.get(item.getShopId()));
 				this.shops.add(info);
 				
 				distance.add(new DistanceCmp(info, CalcDistance.getDistance(lgtd, lttd, item.getShopLgtd(), item.getShopLttd())));

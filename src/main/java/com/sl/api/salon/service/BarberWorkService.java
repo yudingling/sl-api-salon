@@ -1,6 +1,9 @@
 package com.sl.api.salon.service;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,8 +12,9 @@ import tk.mybatis.mapper.entity.Example;
 
 import com.sl.api.salon.mapper.SlBarberWorkLikeMapper;
 import com.sl.api.salon.mapper.SlBarberWorkMapper;
+import com.sl.api.salon.model.BarberWork;
+import com.sl.api.salon.model.BarberWorkExt;
 import com.sl.api.salon.model.SToken;
-import com.sl.api.salon.model.db.SlBarberWork;
 import com.sl.api.salon.model.db.SlBarberWorkLike;
 import com.zeasn.common.feign.api.SnowFlakeApi;
 
@@ -22,14 +26,26 @@ public class BarberWorkService {
 	private SlBarberWorkLikeMapper workLikeMapper;
 	@Autowired
 	private SnowFlakeApi snowFlakeApi;
+	@Autowired
+	private CommonService commonService;
 	
-	public List<SlBarberWork> getWorks(SToken token, Long shopId, int startIndex, int size, int orderBy){
+	public List<BarberWork> getWorks(SToken token, Long shopId, int startIndex, int size, int orderBy){
+		List<BarberWorkExt> bws = null; 
 		if(orderBy == 0){
-			return this.workMapper.getWorksByTime(token.getBrandId(), shopId, startIndex, size);
+			bws = this.workMapper.getWorksByTime(token.getBrandId(), shopId, startIndex, size);
 			
 		}else{
-			return this.workMapper.getWorksByLike(token.getBrandId(), shopId, startIndex, size);
+			bws = this.workMapper.getWorksByLike(token.getBrandId(), shopId, startIndex, size);
 		}
+		
+		List<BarberWork> result = new ArrayList<>();
+		if(CollectionUtils.isNotEmpty(bws)){
+			for(BarberWorkExt item : bws){
+				result.add(new BarberWork(item, this.commonService.getIconUrl(item)));
+			}
+		}
+		
+		return result;
 	}
 	
 	@Transactional(rollbackFor = Exception.class)

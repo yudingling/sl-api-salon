@@ -1,6 +1,7 @@
 package com.sl.api.salon.controller;
 
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sl.api.salon.filter.FilterHttpServletRequest;
-import com.sl.api.salon.model.db.SlBarberWork;
+import com.sl.api.salon.model.BarberWork;
 import com.sl.api.salon.service.BarberWorkService;
 import com.zeasn.common.model.result.ApiArrayResult;
 import com.zeasn.common.model.result.ApiResult;
@@ -28,7 +29,7 @@ public class BarberWorkController {
 		Assert.notNull(size, "size should not be null or empty");
 		Assert.notNull(sortType, "sortType should not be null or empty");
 		
-		List<SlBarberWork> workds = this.workService.getWorks(request.getToken(), shopId, startIndex, size, sortType);
+		List<BarberWork> workds = this.workService.getWorks(request.getToken(), shopId, startIndex, size, sortType);
 		
 		return new ApiArrayResult<>(workds);
 	}

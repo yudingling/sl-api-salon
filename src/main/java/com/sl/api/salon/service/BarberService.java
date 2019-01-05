@@ -209,7 +209,7 @@ public class BarberService {
 	
 	private Map<Long, List<SlOrder>> getRunningOrders(Set<Long> uIds){
 		Example example = new Example(SlOrder.class);
-	    example.createCriteria().andIn("odBarberUid", uIds).andGreaterThan("odEtm", System.currentTimeMillis());
+	    example.createCriteria().andIn("odBarberUid", uIds).andEqualTo("odPaied", 0).andGreaterThan("odEtm", System.currentTimeMillis());
 	    example.selectProperties("odId", "odBarberUid", "odStm", "odEtm");
 	    
 	    List<SlOrder> orders = this.slOrderMapper.selectByExample(example);

@@ -4,8 +4,10 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.sl.api.salon.model.BarberWorkExt;
 import com.sl.api.salon.model.db.SlBrand;
 import com.sl.api.salon.model.db.SlProduct;
+import com.sl.api.salon.model.db.SlShopEvent;
 import com.sl.api.salon.model.db.SlShopImage;
 import com.sl.api.salon.model.db.SlUser;
 
@@ -35,5 +37,13 @@ public class CommonService {
 	
 	public String getIconUrl(SlShopImage image){
 		return image.getSpiImg() != null ? String.format("%s/icon/%d", this.fileUrl, image.getSpiImg()) : null;
+	}
+	
+	public String getIconUrl(SlShopEvent event){
+		return event.getEventImg() != null ? String.format("%s/icon/%d", this.fileUrl, event.getEventImg()) : null;
+	}
+	
+	public String getIconUrl(BarberWorkExt work){
+		return work.getBbwImg() != null ? String.format("%s/icon/%d", this.fileUrl, work.getBbwImg()) : null;
 	}
 }

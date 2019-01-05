@@ -29,6 +29,7 @@ public class ShopInfo implements Serializable {
 	private List<ShopHoliday> holidays;
 	
 	private List<String> images;
+	private ShopEvent event;
 	
 	public Long getShopId() {
 		return shopId;
@@ -99,6 +100,12 @@ public class ShopInfo implements Serializable {
 	public void setImages(List<String> images) {
 		this.images = images;
 	}
+	public ShopEvent getEvent() {
+		return event;
+	}
+	public void setEvent(ShopEvent event) {
+		this.event = event;
+	}
 	
 	public ShopInfo(){
 		super();
@@ -119,7 +126,7 @@ public class ShopInfo implements Serializable {
 		this.shopEtm = shopEtm;
 	}
 	
-	public ShopInfo(SlShop shop, List<ShopHoliday> holidays, List<String> images) {
+	public ShopInfo(SlShop shop, List<ShopHoliday> holidays, List<String> images, ShopEvent event) {
 		super();
 		this.shopId = shop.getShopId();
 		this.shopNm = shop.getShopNm();
@@ -133,5 +140,6 @@ public class ShopInfo implements Serializable {
 		
 		this.holidays = holidays;
 		this.images = images;
+		this.event = event;
 	}
 }
