@@ -9,6 +9,7 @@ public class SlBrand implements Serializable {
 	@Id
 	private String bdId;
 	private String bdNm;
+	private Long bdLogo;
 	private String bdUrl;
 	private Long crtTs;
 	private Long uptTs;
@@ -24,6 +25,12 @@ public class SlBrand implements Serializable {
 	}
 	public void setBdNm(String bdNm) {
 		this.bdNm = bdNm;
+	}
+	public Long getBdLogo() {
+		return bdLogo;
+	}
+	public void setBdLogo(Long bdLogo) {
+		this.bdLogo = bdLogo;
 	}
 	public String getBdUrl() {
 		return bdUrl;
@@ -48,11 +55,12 @@ public class SlBrand implements Serializable {
 		super();
 	}
 	
-	public SlBrand(String bdId, String bdNm, String bdUrl, Long crtTs,
-			Long uptTs) {
+	public SlBrand(String bdId, String bdNm, Long bdLogo, String bdUrl,
+			Long crtTs, Long uptTs) {
 		super();
 		this.bdId = bdId;
 		this.bdNm = bdNm;
+		this.bdLogo = bdLogo;
 		this.bdUrl = bdUrl;
 		this.crtTs = crtTs;
 		this.uptTs = uptTs;

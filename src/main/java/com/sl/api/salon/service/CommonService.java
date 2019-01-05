@@ -4,7 +4,9 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.sl.api.salon.model.db.SlBrand;
 import com.sl.api.salon.model.db.SlProduct;
+import com.sl.api.salon.model.db.SlShopImage;
 import com.sl.api.salon.model.db.SlUser;
 
 @Service
@@ -24,6 +26,14 @@ public class CommonService {
 	}
 	
 	public String getIconUrl(SlProduct product){
-		return String.format("%s/icon/%d", this.fileUrl, product.getPdIcon());
+		return product.getPdIcon() != null ? String.format("%s/icon/%d", this.fileUrl, product.getPdIcon()) : null;
+	}
+	
+	public String getIconUrl(SlBrand brand){
+		return brand.getBdLogo() != null ? String.format("%s/icon/%d", this.fileUrl, brand.getBdLogo()) : null;
+	}
+	
+	public String getIconUrl(SlShopImage image){
+		return image.getSpiImg() != null ? String.format("%s/icon/%d", this.fileUrl, image.getSpiImg()) : null;
 	}
 }

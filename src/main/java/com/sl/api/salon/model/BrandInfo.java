@@ -9,16 +9,16 @@ import org.apache.commons.collections.CollectionUtils;
 
 import com.sl.api.salon.model.db.SlBrand;
 import com.sl.api.salon.model.db.SlShop;
-import com.sl.api.salon.model.db.SlShopHoliday;
 
 public class BrandInfo implements Serializable {
 	private static final long serialVersionUID = -7442285215862675086L;
 	
 	private String bdId;
 	private String bdNm;
+	private String bdLogo;
 	private String bdUrl;
 	private List<ShopInfo> shops;
-	private ShopInfo recommend;
+	private Integer recommendShopIndex = -1;
 	
 	public String getBdId() {
 		return bdId;
@@ -32,6 +32,12 @@ public class BrandInfo implements Serializable {
 	public void setBdNm(String bdNm) {
 		this.bdNm = bdNm;
 	}
+	public String getBdLogo() {
+		return bdLogo;
+	}
+	public void setBdLogo(String bdLogo) {
+		this.bdLogo = bdLogo;
+	}
 	public String getBdUrl() {
 		return bdUrl;
 	}
@@ -44,38 +50,42 @@ public class BrandInfo implements Serializable {
 	public void setShops(List<ShopInfo> shops) {
 		this.shops = shops;
 	}
-	public ShopInfo getRecommend() {
-		return recommend;
+	public Integer getRecommendShopIndex() {
+		return recommendShopIndex;
 	}
-	public void setRecommend(ShopInfo recommend) {
-		this.recommend = recommend;
+	public void setRecommendShopIndex(Integer recommendShopIndex) {
+		this.recommendShopIndex = recommendShopIndex;
 	}
+	
 	public BrandInfo(){
 		super();
 	}
 	
-	public BrandInfo(String bdId, String bdNm, String bdUrl,
-			List<ShopInfo> shops, ShopInfo recommend) {
+	public BrandInfo(String bdId, String bdNm, String bdUrl, String bdLogo, 
+			List<ShopInfo> shops, Integer recommendShopIndex) {
 		super();
 		this.bdId = bdId;
 		this.bdNm = bdNm;
+		this.bdLogo = bdLogo;
 		this.bdUrl = bdUrl;
 		this.shops = shops;
-		this.recommend = recommend;
+		this.recommendShopIndex = recommendShopIndex;
 	}
 	
-	public BrandInfo(SlBrand brand, List<SlShop> shops, Map<Long, List<SlShopHoliday>> holidayMap, double lgtd, double lttd) {
+	public BrandInfo(SlBrand brand, String brandLogo, List<SlShop> shops, Map<Long, List<ShopHoliday>> holidayMap, Map<Long, List<String>> imageMap,
+			double lgtd, double lttd) {
 		super();
 		this.bdId = brand.getBdId();
 		this.bdNm = brand.getBdNm();
 		this.bdUrl = brand.getBdUrl();
 		this.shops = new ArrayList<>();
+		this.bdLogo = brandLogo;
 		
 		if(CollectionUtils.isNotEmpty(shops)){
 			List<DistanceCmp> distance = new ArrayList<>();
 			
 			for(SlShop item : shops){
-				ShopInfo info = new ShopInfo(item, holidayMap.get(item.getShopId()));
+				ShopInfo info = new ShopInfo(item, holidayMap.get(item.getShopId()), imageMap.get(item.getShopId()));
 				this.shops.add(info);
 				
 				distance.add(new DistanceCmp(info, CalcDistance.getDistance(lgtd, lttd, item.getShopLgtd(), item.getShopLttd())));
@@ -92,7 +102,7 @@ public class BrandInfo implements Serializable {
 				}
 			});
 			
-			this.recommend = distance.get(0).shop;
+			this.recommendShopIndex = this.shops.indexOf(distance.get(0).shop);
 		}
 	}
 	

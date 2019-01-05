@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.List;
 
 import com.sl.api.salon.model.db.SlShop;
-import com.sl.api.salon.model.db.SlShopHoliday;
 
 public class ShopInfo implements Serializable {
 	private static final long serialVersionUID = -1114508358837642398L;
@@ -15,7 +14,7 @@ public class ShopInfo implements Serializable {
 	private Double shopLgtd;
 	private Double shopLttd;
 	private String shopLocation;
-	private Long shopIcon;
+	private String shopPhone;
 	/**
 	 * start service time ( 10.5 means 10:30)
 	 */
@@ -27,7 +26,9 @@ public class ShopInfo implements Serializable {
 	/**
 	 * out of service time
 	 */
-	private List<SlShopHoliday> holidays;
+	private List<ShopHoliday> holidays;
+	
+	private List<String> images;
 	
 	public Long getShopId() {
 		return shopId;
@@ -65,11 +66,11 @@ public class ShopInfo implements Serializable {
 	public void setShopLocation(String shopLocation) {
 		this.shopLocation = shopLocation;
 	}
-	public Long getShopIcon() {
-		return shopIcon;
+	public String getShopPhone() {
+		return shopPhone;
 	}
-	public void setShopIcon(Long shopIcon) {
-		this.shopIcon = shopIcon;
+	public void setShopPhone(String shopPhone) {
+		this.shopPhone = shopPhone;
 	}
 	public Double getShopStm() {
 		return shopStm;
@@ -86,11 +87,17 @@ public class ShopInfo implements Serializable {
 	public void setShopEtm(Double shopEtm) {
 		this.shopEtm = shopEtm;
 	}
-	public List<SlShopHoliday> getHolidays() {
+	public List<ShopHoliday> getHolidays() {
 		return holidays;
 	}
-	public void setHolidays(List<SlShopHoliday> holidays) {
+	public void setHolidays(List<ShopHoliday> holidays) {
 		this.holidays = holidays;
+	}
+	public List<String> getImages() {
+		return images;
+	}
+	public void setImages(List<String> images) {
+		this.images = images;
 	}
 	
 	public ShopInfo(){
@@ -98,7 +105,7 @@ public class ShopInfo implements Serializable {
 	}
 	
 	public ShopInfo(Long shopId, String shopNm, String bdId, Double shopLgtd,
-			Double shopLttd, String shopLocation, Long shopIcon,
+			Double shopLttd, String shopLocation, String shopPhone, 
 			Double shopStm, Double shopEtm) {
 		super();
 		this.shopId = shopId;
@@ -107,12 +114,12 @@ public class ShopInfo implements Serializable {
 		this.shopLgtd = shopLgtd;
 		this.shopLttd = shopLttd;
 		this.shopLocation = shopLocation;
-		this.shopIcon = shopIcon;
+		this.shopPhone = shopPhone;
 		this.shopStm = shopStm;
 		this.shopEtm = shopEtm;
 	}
 	
-	public ShopInfo(SlShop shop, List<SlShopHoliday> holidays) {
+	public ShopInfo(SlShop shop, List<ShopHoliday> holidays, List<String> images) {
 		super();
 		this.shopId = shop.getShopId();
 		this.shopNm = shop.getShopNm();
@@ -120,10 +127,11 @@ public class ShopInfo implements Serializable {
 		this.shopLgtd = shop.getShopLgtd();
 		this.shopLttd = shop.getShopLttd();
 		this.shopLocation = shop.getShopLocation();
-		this.shopIcon = shop.getShopIcon();
+		this.shopPhone = shop.getShopPhone();
 		this.shopStm = shop.getShopStm();
 		this.shopEtm = shop.getShopEtm();
 		
 		this.holidays = holidays;
+		this.images = images;
 	}
 }

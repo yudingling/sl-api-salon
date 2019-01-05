@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
+
+import net.logstash.logback.encoder.org.apache.commons.lang.StringUtils;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,12 +15,15 @@ import tk.mybatis.mapper.entity.Example;
 
 import com.sl.api.salon.mapper.SlBrandMapper;
 import com.sl.api.salon.mapper.SlShopHolidayMapper;
+import com.sl.api.salon.mapper.SlShopImageMapper;
 import com.sl.api.salon.mapper.SlShopMapper;
 import com.sl.api.salon.model.BrandInfo;
 import com.sl.api.salon.model.SToken;
+import com.sl.api.salon.model.ShopHoliday;
 import com.sl.api.salon.model.db.SlBrand;
 import com.sl.api.salon.model.db.SlShop;
 import com.sl.api.salon.model.db.SlShopHoliday;
+import com.sl.api.salon.model.db.SlShopImage;
 
 @Service
 public class BrandService {
@@ -30,14 +33,21 @@ public class BrandService {
 	private SlShopMapper slShopMapper;
 	@Autowired
 	private SlShopHolidayMapper slShopHolidayMapper;
+	@Autowired
+	private SlShopImageMapper slShopImageMapper;
+	@Autowired
+	private CommonService commonService;
 	
 	public BrandInfo getBrandInfo(SToken token, double lgtd, double lttd){
 		SlBrand brand = this.slBrandMapper.selectByPrimaryKey(token.getBrandId());
 		
 		List<SlShop> shops = this.getShops(token.getBrandId());
-		Map<Long, List<SlShopHoliday>> holidayMap = this.getShopHolidays(shops);
+		Map<Long, List<ShopHoliday>> holidayMap = this.getShopHolidays(token.getBrandId());
+		Map<Long, List<String>> imageMap = this.getShopImages(token.getBrandId());
 		
-		return new BrandInfo(brand, shops, holidayMap, lgtd, lttd);
+		String brandLogo = this.commonService.getIconUrl(brand);
+		
+		return new BrandInfo(brand, brandLogo, shops, holidayMap, imageMap, lgtd, lttd);
 	}
 	
 	private List<SlShop> getShops(String bdId){
@@ -48,25 +58,50 @@ public class BrandService {
 	    return this.slShopMapper.selectByExample(example);
 	}
 	
-	private Map<Long, List<SlShopHoliday>> getShopHolidays(List<SlShop> shops){
-		Set<Long> shopIds = shops.stream().map(SlShop::getShopId).collect(Collectors.toSet());
+	private Map<Long, List<String>> getShopImages(String bdId){
+		Example example = new Example(SlShopImage.class);
+	    example.createCriteria().andEqualTo("bdId", bdId);
+	    example.orderBy("crtTs");
+	    
+	    List<SlShopImage> images = this.slShopImageMapper.selectByExample(example);
+	    Map<Long, List<String>> imageMap = new HashMap<>();
+	    
+	    if(CollectionUtils.isNotEmpty(images)){
+			for(SlShopImage img : images){
+				List<String> tmp = imageMap.get(img.getShopId());
+				if(tmp == null){
+					tmp = new ArrayList<>();
+					imageMap.put(img.getShopId(), tmp);
+				}
+				
+				String imageUrl = this.commonService.getIconUrl(img);
+				if(StringUtils.isNotEmpty(imageUrl)){
+					tmp.add(imageUrl);
+				}
+			}
+		}
 		
+		return imageMap;
+	}
+	
+	private Map<Long, List<ShopHoliday>> getShopHolidays(String bdId){
 		Example example = new Example(SlShopHoliday.class);
-	    example.createCriteria().andIn("shopId", shopIds).andGreaterThan("sofEtm", System.currentTimeMillis());
+	    example.createCriteria().andEqualTo("bdId", bdId).andGreaterThan("sofEtm", System.currentTimeMillis());
+	    example.orderBy("sofStm").asc();
 	    
 	    List<SlShopHoliday> holidays = this.slShopHolidayMapper.selectByExample(example);
 	    
-	    Map<Long, List<SlShopHoliday>> holidayMap = new HashMap<>();
+	    Map<Long, List<ShopHoliday>> holidayMap = new HashMap<>();
 	    
 		if(CollectionUtils.isNotEmpty(holidays)){
 			for(SlShopHoliday holiday : holidays){
-				List<SlShopHoliday> tmp = holidayMap.get(holiday.getShopId());
+				List<ShopHoliday> tmp = holidayMap.get(holiday.getShopId());
 				if(tmp == null){
 					tmp = new ArrayList<>();
 					holidayMap.put(holiday.getShopId(), tmp);
 				}
 				
-				tmp.add(holiday);
+				tmp.add(new ShopHoliday(holiday));
 			}
 		}
 		

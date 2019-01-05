@@ -4,22 +4,21 @@ import java.io.Serializable;
 
 import javax.persistence.Id;
 
-public class SlShopHoliday implements Serializable {
-	private static final long serialVersionUID = -526298778037502548L;
+public class SlShopImage implements Serializable {
+	private static final long serialVersionUID = 8552959719397584479L;
 	@Id
-	private Long sofId;
+	private Long spiId;
 	private String bdId;
 	private Long shopId;
-	private Long sofStm;
-	private Long sofEtm;
+	private Long spiImg;
 	private Long crtTs;
 	private Long uptTs;
 	
-	public Long getSofId() {
-		return sofId;
+	public Long getSpiId() {
+		return spiId;
 	}
-	public void setSofId(Long sofId) {
-		this.sofId = sofId;
+	public void setSpiId(Long spiId) {
+		this.spiId = spiId;
 	}
 	public String getBdId() {
 		return bdId;
@@ -33,17 +32,11 @@ public class SlShopHoliday implements Serializable {
 	public void setShopId(Long shopId) {
 		this.shopId = shopId;
 	}
-	public Long getSofStm() {
-		return sofStm;
+	public Long getSpiImg() {
+		return spiImg;
 	}
-	public void setSofStm(Long sofStm) {
-		this.sofStm = sofStm;
-	}
-	public Long getSofEtm() {
-		return sofEtm;
-	}
-	public void setSofEtm(Long sofEtm) {
-		this.sofEtm = sofEtm;
+	public void setSpiImg(Long spiImg) {
+		this.spiImg = spiImg;
 	}
 	public Long getCrtTs() {
 		return crtTs;
@@ -58,18 +51,17 @@ public class SlShopHoliday implements Serializable {
 		this.uptTs = uptTs;
 	}
 	
-	public SlShopHoliday(){
+	public SlShopImage(){
 		super();
 	}
 	
-	public SlShopHoliday(Long sofId, String bdId, Long shopId, Long sofStm, Long sofEtm,
+	public SlShopImage(Long spiId, String bdId, Long shopId, Long spiImg,
 			Long crtTs, Long uptTs) {
 		super();
-		this.sofId = sofId;
+		this.spiId = spiId;
 		this.bdId = bdId;
 		this.shopId = shopId;
-		this.sofStm = sofStm;
-		this.sofEtm = sofEtm;
+		this.spiImg = spiImg;
 		this.crtTs = crtTs;
 		this.uptTs = uptTs;
 	}
