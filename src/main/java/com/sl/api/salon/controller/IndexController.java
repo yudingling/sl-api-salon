@@ -6,22 +6,23 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
 import com.sl.api.salon.model.UserForToken;
 import com.sl.api.salon.service.TokenService;
-import com.zeasn.common.model.result.ApiResult;
 
-@RestController
+@Controller
 @RequestMapping("/index")
 public class IndexController {
 	@Autowired
 	private TokenService tokenService;
 	
-	public ApiResult get(@RequestParam String brandId, @RequestParam String unionId, @RequestParam String nickName, 
+	@RequestMapping(method = RequestMethod.GET)
+	public void get(@RequestParam String brandId, @RequestParam String unionId, @RequestParam String nickName, 
 			@RequestParam String avatarUrl, @RequestParam String phoneNumber, HttpServletRequest request, HttpServletResponse response) throws IOException{
 		String domain = this.getDomain(request);
 		
@@ -50,8 +51,6 @@ public class IndexController {
 		}catch(Exception ex){
 			response.sendRedirect(this.tokenService.getRedirectForError(domain));
 		}
-		
-		return ApiResult.success();
 	}
 	
 	private String getDomain(HttpServletRequest request){

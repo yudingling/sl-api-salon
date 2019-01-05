@@ -20,6 +20,7 @@ public class BarberWorkController {
 	@Autowired
 	private BarberWorkService workService;
 	
+	@RequestMapping(method = RequestMethod.GET)
 	public ApiResult get(@RequestParam Long shopId, @RequestParam Integer startIndex, @RequestParam Integer size, 
 			@RequestParam Integer sortType, FilterHttpServletRequest request){
 		Assert.notNull(shopId, "shopId should not be null or empty");

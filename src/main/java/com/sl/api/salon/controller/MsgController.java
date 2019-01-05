@@ -22,6 +22,7 @@ public class MsgController {
 	@Autowired
 	private MsgService msgService;
 	
+	@RequestMapping(method = RequestMethod.GET)
 	public ApiResult get(@RequestParam Boolean readed, @RequestParam Integer startIndex, @RequestParam Integer size, FilterHttpServletRequest request){
 		Assert.notNull(readed, "readed should not be null or empty");
 		Assert.notNull(startIndex, "startIndex should not be null or empty");

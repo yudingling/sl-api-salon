@@ -42,10 +42,10 @@ public class TokenService implements IWriteBack<Object> {
 		UserType tp = UserType.valueOf(user.getRoleId());
 		switch(tp){
 			case BARBER:
-				return String.format("%s/pages/barber.html?token=%s", domain, tokenStr);
+				return String.format("%s/pages/barber?token=%s", domain, tokenStr);
 				
 			case MEMBER:
-				return String.format("%s/pages/member.html?token=%s", domain, tokenStr);
+				return String.format("%s/pages/member?token=%s", domain, tokenStr);
 			
 			default:
 				return this.getRedirectForError(domain);
@@ -53,7 +53,7 @@ public class TokenService implements IWriteBack<Object> {
 	}
 	
 	public String getRedirectForError(String domain){
-		return domain + "/static/error.html";
+		return domain + "/error";
 	}
 	
 	public SToken getToken(String token){

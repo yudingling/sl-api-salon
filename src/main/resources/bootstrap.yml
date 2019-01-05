@@ -1,6 +1,6 @@
 server:
   port: 61001
-  
+
 eureka:
   instance:
     preferIpAddress: true
@@ -75,6 +75,15 @@ spring:
   resources:
     # rest 服务原则上不能为资源建议 mapping
     add-mappings: true
+  thymeleaf:
+    # 这个开发配置为false，避免改了模板还要重启服务器
+    cache: false
+    # 默认就是 templates 目录
+    #prefix: classpath:/templates/
+    suffix: .html
+    encoding: UTF-8
+    #servlet:
+      #content-type: application/ce-html+xml
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     driver-class-name: com.mysql.jdbc.Driver

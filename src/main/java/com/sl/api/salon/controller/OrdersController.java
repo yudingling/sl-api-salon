@@ -1,10 +1,12 @@
 package com.sl.api.salon.controller;
 
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,6 +24,7 @@ public class OrdersController {
 	@Autowired
 	private OrderService orderService;
 	
+	@RequestMapping(method = RequestMethod.GET)
 	public ApiResult get(@RequestParam Integer startIndex, @RequestParam Integer size, FilterHttpServletRequest request){
 		Assert.notNull(startIndex, "startIndex should not be null or empty");
 		Assert.notNull(size, "size should not be null or empty");
