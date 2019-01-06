@@ -129,4 +129,4 @@ spring:
 mybatis.configuration.mapUnderscoreToCamelCase: true
 
 salon:
-  file: http://localhost:8080/file
+  file: http://10.8.10.100:61002
