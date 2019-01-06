@@ -6,7 +6,7 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import com.sl.api.salon.model.UserLevelInfo;
-import com.sl.api.salon.model.db.SlUserLevel;
+import com.sl.common.model.db.SlUserLevel;
 import com.zeasn.common.mybatis.MyMapper;
 
 public interface SlUserLevelMapper extends MyMapper<SlUserLevel> {

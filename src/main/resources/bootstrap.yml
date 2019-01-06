@@ -27,6 +27,7 @@ feign:
     max-connections-per-route: 1000
   serviceVersion:
     snowflake: v0
+    sl-file-salon: v0
 
 ribbon:
   # 配置见 @DefaultClientConfigImpl

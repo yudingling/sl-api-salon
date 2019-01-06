@@ -49,8 +49,8 @@
 
 	<dependencies>
 		<dependency>
-		    <groupId>com.zeasn</groupId>
-			<artifactId>common</artifactId>
+		    <groupId>com.sl</groupId>
+			<artifactId>sl-common-salon</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		

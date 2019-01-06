@@ -3,8 +3,8 @@ package com.sl.api.salon.model;
 import java.io.Serializable;
 import java.util.List;
 
-import com.sl.api.salon.model.db.SlOrder;
-import com.sl.api.salon.model.db.SlOrderEvaluation;
+import com.sl.common.model.db.SlOrder;
+import com.sl.common.model.db.SlOrderEvaluation;
 
 public class OrderInfo implements Serializable {
 	private static final long serialVersionUID = 5236094613690348130L;

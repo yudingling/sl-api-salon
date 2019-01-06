@@ -3,7 +3,7 @@ package com.sl.api.salon.model;
 import java.io.Serializable;
 import java.util.List;
 
-import com.sl.api.salon.model.db.SlShop;
+import com.sl.common.model.db.SlShop;
 
 public class ShopInfo implements Serializable {
 	private static final long serialVersionUID = -1114508358837642398L;

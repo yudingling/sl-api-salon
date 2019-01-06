@@ -6,7 +6,7 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import com.sl.api.salon.model.HistoryOrder;
-import com.sl.api.salon.model.db.SlOrder;
+import com.sl.common.model.db.SlOrder;
 import com.zeasn.common.mybatis.MyMapper;
 
 public interface SlOrderMapper extends MyMapper<SlOrder> {

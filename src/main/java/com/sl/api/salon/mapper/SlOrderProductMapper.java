@@ -5,8 +5,8 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
-import com.sl.api.salon.model.db.SlOrderProduct;
-import com.sl.api.salon.model.db.SlProduct;
+import com.sl.common.model.db.SlOrderProduct;
+import com.sl.common.model.db.SlProduct;
 import com.zeasn.common.mybatis.MyMapper;
 
 public interface SlOrderProductMapper extends MyMapper<SlOrderProduct> {

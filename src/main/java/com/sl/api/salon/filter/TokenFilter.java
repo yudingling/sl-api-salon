@@ -14,9 +14,11 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import com.sl.api.salon.model.SToken;
 import com.sl.api.salon.service.TokenService;
-import com.sl.api.salon.util.Constant;
+import com.sl.common.filter.BaseFilter;
+import com.sl.common.filter.FilterHttpServletRequest;
+import com.sl.common.model.SToken;
+import com.sl.common.util.Constant;
 import com.zeasn.common.model.result.ApiError;
 import com.zeasn.common.model.result.ApiResult;
 

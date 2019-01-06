@@ -13,11 +13,11 @@ import com.sl.api.salon.mapper.SlUserLevelMapper;
 import com.sl.api.salon.mapper.SlUserMapper;
 import com.sl.api.salon.mapper.SlUserVoucherMapper;
 import com.sl.api.salon.model.MemberInfo;
-import com.sl.api.salon.model.SToken;
 import com.sl.api.salon.model.UserLevelInfo;
 import com.sl.api.salon.model.UserVoucherInfo;
 import com.sl.api.salon.model.UserVoucherInfoFromDB;
-import com.sl.api.salon.model.db.SlUser;
+import com.sl.common.model.SToken;
+import com.sl.common.model.db.SlUser;
 
 @Service
 public class MemberService {

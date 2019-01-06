@@ -5,7 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
-import com.sl.api.salon.model.db.SlMsg;
+import com.sl.common.model.db.SlMsg;
 import com.zeasn.common.mybatis.MyMapper;
 
 public interface SlMsgMapper extends MyMapper<SlMsg> {

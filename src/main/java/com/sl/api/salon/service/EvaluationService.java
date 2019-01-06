@@ -10,9 +10,9 @@ import tk.mybatis.mapper.entity.Example;
 
 import com.sl.api.salon.mapper.SlOrderEvaluationMapper;
 import com.sl.api.salon.mapper.SlOrderMapper;
-import com.sl.api.salon.model.SToken;
-import com.sl.api.salon.model.db.SlOrder;
-import com.sl.api.salon.model.db.SlOrderEvaluation;
+import com.sl.common.model.SToken;
+import com.sl.common.model.db.SlOrder;
+import com.sl.common.model.db.SlOrderEvaluation;
 import com.zeasn.common.feign.api.SnowFlakeApi;
 
 @Service

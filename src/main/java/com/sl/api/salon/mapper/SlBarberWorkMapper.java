@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 import com.sl.api.salon.model.BarberWorkExt;
-import com.sl.api.salon.model.db.SlBarberWork;
+import com.sl.common.model.db.SlBarberWork;
 import com.zeasn.common.mybatis.MyMapper;
 
 public interface SlBarberWorkMapper extends MyMapper<SlBarberWork> {

@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sl.api.salon.filter.FilterHttpServletRequest;
-import com.sl.api.salon.model.db.SlMsg;
 import com.sl.api.salon.service.MsgService;
+import com.sl.common.filter.FilterHttpServletRequest;
+import com.sl.common.model.db.SlMsg;
 import com.zeasn.common.model.result.ApiArrayResult;
 import com.zeasn.common.model.result.ApiResult;
 

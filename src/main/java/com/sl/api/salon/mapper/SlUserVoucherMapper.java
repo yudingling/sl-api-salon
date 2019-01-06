@@ -4,8 +4,9 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+
 import com.sl.api.salon.model.UserVoucherInfoFromDB;
-import com.sl.api.salon.model.db.SlUserVoucher;
+import com.sl.common.model.db.SlUserVoucher;
 import com.zeasn.common.mybatis.MyMapper;
 
 public interface SlUserVoucherMapper extends MyMapper<SlUserVoucher> {

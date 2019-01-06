@@ -3,7 +3,7 @@ package com.sl.api.salon.model;
 import java.io.Serializable;
 import java.util.List;
 
-import com.sl.api.salon.model.db.SlReservation;
+import com.sl.common.model.db.SlReservation;
 
 public class ReservationInfo implements Serializable {
 	private static final long serialVersionUID = -4731815169443542236L;

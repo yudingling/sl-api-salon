@@ -7,8 +7,8 @@ import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
 
-import com.sl.api.salon.model.db.SlBrand;
-import com.sl.api.salon.model.db.SlShop;
+import com.sl.common.model.db.SlBrand;
+import com.sl.common.model.db.SlShop;
 
 public class BrandInfo implements Serializable {
 	private static final long serialVersionUID = -7442285215862675086L;

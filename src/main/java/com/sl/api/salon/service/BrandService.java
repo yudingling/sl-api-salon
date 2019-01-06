@@ -19,14 +19,14 @@ import com.sl.api.salon.mapper.SlShopHolidayMapper;
 import com.sl.api.salon.mapper.SlShopImageMapper;
 import com.sl.api.salon.mapper.SlShopMapper;
 import com.sl.api.salon.model.BrandInfo;
-import com.sl.api.salon.model.SToken;
 import com.sl.api.salon.model.ShopEvent;
 import com.sl.api.salon.model.ShopHoliday;
-import com.sl.api.salon.model.db.SlBrand;
-import com.sl.api.salon.model.db.SlShop;
-import com.sl.api.salon.model.db.SlShopEvent;
-import com.sl.api.salon.model.db.SlShopHoliday;
-import com.sl.api.salon.model.db.SlShopImage;
+import com.sl.common.model.SToken;
+import com.sl.common.model.db.SlBrand;
+import com.sl.common.model.db.SlShop;
+import com.sl.common.model.db.SlShopEvent;
+import com.sl.common.model.db.SlShopHoliday;
+import com.sl.common.model.db.SlShopImage;
 
 @Service
 public class BrandService {

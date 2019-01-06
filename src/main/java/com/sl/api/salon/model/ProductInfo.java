@@ -2,7 +2,7 @@ package com.sl.api.salon.model;
 
 import java.io.Serializable;
 
-import com.sl.api.salon.model.db.SlProduct;
+import com.sl.common.model.db.SlProduct;
 
 public class ProductInfo implements Serializable {
 	private static final long serialVersionUID = -2470885734004580495L;

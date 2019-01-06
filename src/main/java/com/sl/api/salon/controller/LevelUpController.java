@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sl.api.salon.filter.FilterHttpServletRequest;
-import com.sl.api.salon.model.db.SlUserLevelOrder;
 import com.sl.api.salon.service.LevelService;
+import com.sl.common.filter.FilterHttpServletRequest;
+import com.sl.common.model.db.SlUserLevelOrder;
 import com.zeasn.common.model.result.ApiObjectResult;
 import com.zeasn.common.model.result.ApiResult;
 

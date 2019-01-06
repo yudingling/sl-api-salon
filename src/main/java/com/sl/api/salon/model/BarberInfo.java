@@ -3,7 +3,7 @@ package com.sl.api.salon.model;
 import java.io.Serializable;
 import java.util.Map;
 
-import com.sl.api.salon.model.db.SlUser;
+import com.sl.common.model.db.SlUser;
 
 public class BarberInfo implements Serializable {
 	private static final long serialVersionUID = -1810139595415227453L;

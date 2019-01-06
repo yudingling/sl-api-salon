@@ -10,12 +10,12 @@ import org.springframework.transaction.annotation.Transactional;
 import com.sl.api.salon.mapper.SlBrandMapper;
 import com.sl.api.salon.mapper.SlUserMapper;
 import com.sl.api.salon.mapper.SlUserWechatMapper;
-import com.sl.api.salon.model.SToken;
-import com.sl.api.salon.model.UserForToken;
-import com.sl.api.salon.model.UserType;
-import com.sl.api.salon.model.db.SlUser;
-import com.sl.api.salon.model.db.SlUserWechat;
-import com.sl.api.salon.util.Constant;
+import com.sl.common.model.SToken;
+import com.sl.common.model.UserForToken;
+import com.sl.common.model.UserType;
+import com.sl.common.model.db.SlUser;
+import com.sl.common.model.db.SlUserWechat;
+import com.sl.common.util.Constant;
 import com.zeasn.common.daemon.Daemon;
 import com.zeasn.common.daemon.IWriteBack;
 import com.zeasn.common.feign.api.SnowFlakeApi;
@@ -48,12 +48,8 @@ public class TokenService implements IWriteBack<Object> {
 				return String.format("%s/pages/member?token=%s", domain, tokenStr);
 			
 			default:
-				return this.getRedirectForError(domain);
+				return domain + "/error";
 		}
-	}
-	
-	public String getRedirectForError(String domain){
-		return domain + "/error";
 	}
 	
 	public SToken getToken(String token){

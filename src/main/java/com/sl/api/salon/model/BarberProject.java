@@ -3,8 +3,8 @@ package com.sl.api.salon.model;
 import java.io.Serializable;
 import java.util.Set;
 
-import com.sl.api.salon.model.db.SlBarberProject;
-import com.sl.api.salon.model.db.SlProject;
+import com.sl.common.model.db.SlBarberProject;
+import com.sl.common.model.db.SlProject;
 
 public class BarberProject implements Serializable {
 	private static final long serialVersionUID = 709387429052072702L;

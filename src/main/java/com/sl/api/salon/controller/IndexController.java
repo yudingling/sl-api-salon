@@ -5,6 +5,7 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
@@ -12,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.sl.api.salon.model.UserForToken;
 import com.sl.api.salon.service.TokenService;
+import com.sl.common.model.UserForToken;
 
 @Controller
 @RequestMapping("/index")
@@ -49,7 +50,7 @@ public class IndexController {
 			response.sendRedirect(this.tokenService.getRedirect(domain, user, tokenStr));
 			
 		}catch(Exception ex){
-			response.sendRedirect(this.tokenService.getRedirectForError(domain));
+			response.sendError(HttpStatus.SC_BAD_REQUEST, ex.getMessage());
 		}
 	}
 	

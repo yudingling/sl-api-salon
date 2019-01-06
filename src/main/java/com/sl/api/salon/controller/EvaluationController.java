@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sl.api.salon.filter.FilterHttpServletRequest;
-import com.sl.api.salon.model.SToken;
 import com.sl.api.salon.service.EvaluationService;
+import com.sl.common.filter.FilterHttpServletRequest;
+import com.sl.common.model.SToken;
 import com.zeasn.common.model.result.ApiError;
 import com.zeasn.common.model.result.ApiResult;
 

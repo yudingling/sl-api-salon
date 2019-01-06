@@ -14,8 +14,8 @@ import com.sl.api.salon.mapper.SlBarberWorkLikeMapper;
 import com.sl.api.salon.mapper.SlBarberWorkMapper;
 import com.sl.api.salon.model.BarberWork;
 import com.sl.api.salon.model.BarberWorkExt;
-import com.sl.api.salon.model.SToken;
-import com.sl.api.salon.model.db.SlBarberWorkLike;
+import com.sl.common.model.SToken;
+import com.sl.common.model.db.SlBarberWorkLike;
 import com.zeasn.common.feign.api.SnowFlakeApi;
 
 @Service

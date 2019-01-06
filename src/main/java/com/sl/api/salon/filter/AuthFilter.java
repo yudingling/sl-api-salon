@@ -16,8 +16,10 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import com.sl.api.salon.model.SApiError;
-import com.sl.api.salon.model.UserType;
 import com.sl.api.salon.service.AuthService;
+import com.sl.common.filter.BaseFilter;
+import com.sl.common.filter.FilterHttpServletRequest;
+import com.sl.common.model.UserType;
 import com.zeasn.common.model.result.ApiResult;
 
 public class AuthFilter extends BaseFilter {

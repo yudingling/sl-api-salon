@@ -10,8 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
 import com.sl.api.salon.mapper.SlMsgMapper;
-import com.sl.api.salon.model.SToken;
-import com.sl.api.salon.model.db.SlMsg;
+import com.sl.common.model.SToken;
+import com.sl.common.model.db.SlMsg;
 
 @Service
 public class MsgService {

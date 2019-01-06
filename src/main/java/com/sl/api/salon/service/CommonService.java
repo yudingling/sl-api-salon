@@ -1,20 +1,27 @@
 package com.sl.api.salon.service;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.sl.api.salon.feign.FileApi;
 import com.sl.api.salon.model.BarberWorkExt;
-import com.sl.api.salon.model.db.SlBrand;
-import com.sl.api.salon.model.db.SlProduct;
-import com.sl.api.salon.model.db.SlShopEvent;
-import com.sl.api.salon.model.db.SlShopImage;
-import com.sl.api.salon.model.db.SlUser;
+import com.sl.common.model.db.SlBrand;
+import com.sl.common.model.db.SlProduct;
+import com.sl.common.model.db.SlShopEvent;
+import com.sl.common.model.db.SlShopImage;
+import com.sl.common.model.db.SlUser;
+import com.zeasn.common.log.MyLog;
 
 @Service
 public class CommonService {
+	private static final MyLog log = MyLog.getLog(CommonService.class);
+	
 	@Value("${salon.file}")
 	private String fileUrl;
+	@Autowired
+	private FileApi fileApi;
 	
 	public String getIconUrl(SlUser user){
 		if(StringUtils.isNotEmpty(user.getuAvatar())){
@@ -23,27 +30,40 @@ public class CommonService {
 		}else{
 			Long fileId = user.getuIcon() != null ? user.getuIcon() : 0l;
 			
-			return String.format("%s/icon/%d", this.fileUrl, fileId);
+			return this.getIconUrl(fileId);
 		}
 	}
 	
 	public String getIconUrl(SlProduct product){
-		return product.getPdIcon() != null ? String.format("%s/icon/%d", this.fileUrl, product.getPdIcon()) : null;
+		return product.getPdIcon() != null ? this.getIconUrl(product.getPdIcon()) : null;
 	}
 	
 	public String getIconUrl(SlBrand brand){
-		return brand.getBdLogo() != null ? String.format("%s/icon/%d", this.fileUrl, brand.getBdLogo()) : null;
+		return brand.getBdLogo() != null ? this.getIconUrl(brand.getBdLogo()) : null;
 	}
 	
 	public String getIconUrl(SlShopImage image){
-		return image.getSpiImg() != null ? String.format("%s/icon/%d", this.fileUrl, image.getSpiImg()) : null;
+		return image.getSpiImg() != null ? this.getIconUrl(image.getSpiImg()) : null;
 	}
 	
 	public String getIconUrl(SlShopEvent event){
-		return event.getEventImg() != null ? String.format("%s/icon/%d", this.fileUrl, event.getEventImg()) : null;
+		return event.getEventImg() != null ? this.getIconUrl(event.getEventImg()) : null;
 	}
 	
 	public String getIconUrl(BarberWorkExt work){
-		return work.getBbwImg() != null ? String.format("%s/icon/%d", this.fileUrl, work.getBbwImg()) : null;
+		return work.getBbwImg() != null ? this.getIconUrl(work.getBbwImg()) : null;
+	}
+	
+	/**
+	 * get image url. never throw exception
+	 */
+	private String getIconUrl(Long fileId){
+		try{
+			return String.format("%s/%s", this.fileUrl, this.fileApi.getIcon(fileId));
+			
+		}catch(Exception ex){
+			log.error(ex.getMessage(), ex);
+			return null;
+		}
 	}
 }

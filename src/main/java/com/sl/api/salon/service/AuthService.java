@@ -12,8 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.sl.api.salon.mapper.SlRoleApiMapper;
-import com.sl.api.salon.model.UserType;
-import com.sl.api.salon.model.db.SlRoleApi;
+import com.sl.common.model.UserType;
+import com.sl.common.model.db.SlRoleApi;
 
 @Service
 public class AuthService {
