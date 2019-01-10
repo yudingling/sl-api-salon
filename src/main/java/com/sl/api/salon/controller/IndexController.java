@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.alibaba.druid.util.StringUtils;
 import com.sl.api.salon.service.TokenService;
 import com.sl.common.model.UserForToken;
 
@@ -23,16 +24,21 @@ public class IndexController {
 	private TokenService tokenService;
 	
 	@RequestMapping(method = RequestMethod.GET)
-	public void get(@RequestParam String brandId, @RequestParam String unionId, @RequestParam String nickName, 
-			@RequestParam String avatarUrl, @RequestParam String phoneNumber, HttpServletRequest request, HttpServletResponse response) throws IOException{
+	public void get(@RequestParam String brandId, @RequestParam String code, @RequestParam String nickName, 
+			@RequestParam String avatarUrl, @RequestParam(required = false) String phoneNumber, 
+			HttpServletRequest request, HttpServletResponse response) throws IOException{
 		String domain = this.getDomain(request);
 		
 		try{
 			Assert.hasText(brandId, "brandId should not be null or empty");
-			Assert.hasText(unionId, "unionId should not be null or empty");
+			Assert.hasText(code, "code should not be null or empty");
 			Assert.hasText(nickName, "nickName should not be null or empty");
 			Assert.hasText(avatarUrl, "avatarUrl should not be null or empty");
-			Assert.hasText(phoneNumber, "phoneNumber should not be null or empty");
+			
+			String unionId = this.tokenService.getWechatUnionId(brandId, code);
+			if(StringUtils.isEmpty(unionId)){
+				throw new IllegalArgumentException("wechat verify failed.");
+			}
 			
 			UserForToken user = this.tokenService.getUser(unionId);
 			if(user == null){
