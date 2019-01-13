@@ -43,6 +43,7 @@ public class MemberService {
 				user.getuId(), 
 				user.getuNm(), 
 				this.commonService.getIconUrl(user), 
+				user.getuPhone(),
 				CollectionUtils.isNotEmpty(levels) ? levels.get(0) : null, 
 				this.getVouchers(vouchers));
 	}

@@ -2,14 +2,14 @@ package com.sl.api.salon.controller;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.alibaba.druid.util.StringUtils;
 import com.sl.api.salon.model.SigninResult;
+import com.sl.api.salon.model.WeChatSession;
 import com.sl.api.salon.service.TokenService;
 import com.sl.common.model.UserForToken;
 import com.zeasn.common.model.result.ApiObjectResult;
@@ -31,14 +31,14 @@ public class SigninController {
 		Assert.hasText(nickName, "nickName should not be null or empty");
 		Assert.hasText(avatarUrl, "avatarUrl should not be null or empty");
 		
-		String unionId = this.tokenService.getWechatUnionId(brandId, code);
-		if(StringUtils.isEmpty(unionId)){
+		WeChatSession session = this.tokenService.getWechatSession(brandId, code);
+		if(session == null){
 			throw new IllegalArgumentException("wechat verify failed.");
 		}
 		
-		UserForToken user = this.tokenService.getUser(unionId);
+		UserForToken user = this.tokenService.getUser(session.getOpenId());
 		if(user == null){
-			user = this.tokenService.registerUser(brandId, unionId, nickName, avatarUrl, phoneNumber);
+			user = this.tokenService.registerUser(brandId, session.getOpenId(), nickName, avatarUrl, phoneNumber);
 			if(user == null){
 				throw new IllegalArgumentException("user register failed.");
 			}
@@ -47,7 +47,7 @@ public class SigninController {
 			this.tokenService.updateUserAvatar(user.getuId(), avatarUrl);
 		}
 		
-		String tokenStr = this.tokenService.register(user);
+		String tokenStr = this.tokenService.createToken(user, session);
 		
 		return new ApiObjectResult<>(new SigninResult(tokenStr, user.getRoleId()));
 	}

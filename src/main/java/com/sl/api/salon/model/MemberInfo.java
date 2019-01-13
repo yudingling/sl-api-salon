@@ -9,6 +9,7 @@ public class MemberInfo implements Serializable {
 	private Long uId;
 	private String uNm;
 	private String uIcon;
+	private String uPhone;
 	private UserLevelInfo levelInfo;
 	private List<UserVoucherInfo> vouchers;
 	
@@ -30,6 +31,12 @@ public class MemberInfo implements Serializable {
 	public void setuIcon(String uIcon) {
 		this.uIcon = uIcon;
 	}
+	public String getuPhone() {
+		return uPhone;
+	}
+	public void setuPhone(String uPhone) {
+		this.uPhone = uPhone;
+	}
 	public UserLevelInfo getLevelInfo() {
 		return levelInfo;
 	}
@@ -47,12 +54,13 @@ public class MemberInfo implements Serializable {
 		super();
 	}
 	
-	public MemberInfo(Long uId, String uNm, String uIcon,
+	public MemberInfo(Long uId, String uNm, String uIcon, String uPhone,
 			UserLevelInfo levelInfo, List<UserVoucherInfo> vouchers) {
 		super();
 		this.uId = uId;
 		this.uNm = uNm;
 		this.uIcon = uIcon;
+		this.uPhone = uPhone;
 		this.levelInfo = levelInfo;
 		this.vouchers = vouchers;
 	}

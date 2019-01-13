@@ -9,6 +9,8 @@ public class ShopHoliday implements Serializable {
 	
 	private Long stm;
 	private Long etm;
+	private String desc;
+	
 	public Long getStm() {
 		return stm;
 	}
@@ -21,20 +23,28 @@ public class ShopHoliday implements Serializable {
 	public void setEtm(Long etm) {
 		this.etm = etm;
 	}
+	public String getDesc() {
+		return desc;
+	}
+	public void setDesc(String desc) {
+		this.desc = desc;
+	}
 	
 	public ShopHoliday(){
 		super();
 	}
 	
-	public ShopHoliday(Long stm, Long etm) {
+	public ShopHoliday(Long stm, Long etm, String desc) {
 		super();
 		this.stm = stm;
 		this.etm = etm;
+		this.desc = desc;
 	}
 	
 	public ShopHoliday(SlShopHoliday holiday) {
 		super();
 		this.stm = holiday.getSofStm();
 		this.etm = holiday.getSofEtm();
+		this.desc = holiday.getSofDesc();
 	}
 }
