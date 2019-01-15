@@ -16,13 +16,13 @@ public class ShopInfo implements Serializable {
 	private String shopLocation;
 	private String shopPhone;
 	/**
-	 * start service time ( 10.5 means 10:30)
+	 * start service time (10:30)
 	 */
-	private Double shopStm;
+	private String shopStm;
 	/**
-	 * end service time ( 22.5 means 22:30)
+	 * end service time (22:30)
 	 */
-	private Double shopEtm;
+	private String shopEtm;
 	/**
 	 * out of service time
 	 */
@@ -73,19 +73,19 @@ public class ShopInfo implements Serializable {
 	public void setShopPhone(String shopPhone) {
 		this.shopPhone = shopPhone;
 	}
-	public Double getShopStm() {
+	public String getShopStm() {
 		return shopStm;
 	}
 
-	public void setShopStm(Double shopStm) {
+	public void setShopStm(String shopStm) {
 		this.shopStm = shopStm;
 	}
 
-	public Double getShopEtm() {
+	public String getShopEtm() {
 		return shopEtm;
 	}
 
-	public void setShopEtm(Double shopEtm) {
+	public void setShopEtm(String shopEtm) {
 		this.shopEtm = shopEtm;
 	}
 	public List<ShopHoliday> getHolidays() {
@@ -113,7 +113,7 @@ public class ShopInfo implements Serializable {
 	
 	public ShopInfo(Long shopId, String shopNm, String bdId, Double shopLgtd,
 			Double shopLttd, String shopLocation, String shopPhone, 
-			Double shopStm, Double shopEtm) {
+			String shopStm, String shopEtm) {
 		super();
 		this.shopId = shopId;
 		this.shopNm = shopNm;
