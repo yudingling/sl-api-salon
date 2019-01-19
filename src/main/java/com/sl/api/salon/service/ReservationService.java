@@ -58,6 +58,13 @@ public class ReservationService {
 	@Autowired
 	private CommonService commonService;
 	
+	public boolean hasReservation(SToken token){
+		Example example = new Example(SlReservation.class);
+	    example.createCriteria().andEqualTo("rvUid", token.getUserId()).andEqualTo("rvAvailable", 1).andEqualTo("rvActive", 0);
+	    
+	    return this.slReservationMapper.selectCountByExample(example) > 0;
+	}
+	
 	public ReservationInfo getCurrentReservation(SToken token){
 		Example example = new Example(SlReservation.class);
 	    example.createCriteria().andEqualTo("rvUid", token.getUserId()).andEqualTo("rvAvailable", 1).andEqualTo("rvActive", 0);
@@ -132,10 +139,10 @@ public class ReservationService {
 	private ReservationInfo getInfo(SlReservation reservation, SlUser barber, SlProject project, List<SlProduct> products){
 		ReservationInfo info = new ReservationInfo(reservation);
 		
-		BarberInfo bbInfo = new BarberInfo(barber, this.commonService.getIconUrl(barber), null);
+		BarberInfo bbInfo = new BarberInfo(barber, this.commonService.getIconUrl(barber));
 		
 		SlBarberProject bbp = this.getSlBarberProject(barber.getuId(), project.getPjId());
-		BarberProject barberProject = bbp != null ? new BarberProject(project, bbp, null) : new BarberProject(project, null);
+		BarberProject barberProject = bbp != null ? new BarberProject(project, bbp) : new BarberProject(project);
 		
 		List<ProductInfo> pdInfos = new ArrayList<>();
 		if(CollectionUtils.isNotEmpty(products)){
@@ -203,7 +210,7 @@ public class ReservationService {
 		Example example = new Example(SlShop.class);
 	    example.createCriteria().andEqualTo("shopId", shopId).andEqualTo("bdId", token.getBrandId()).andEqualTo("shopEnable", 1);
 	    
-	    return this.slOrderMapper.selectCountByExample(example) > 0;
+	    return this.slShopMapper.selectCountByExample(example) > 0;
 	}
 	
 	private SlProject checkPjId(SToken token, Long pjId){

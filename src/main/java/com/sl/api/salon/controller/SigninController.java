@@ -8,6 +8,8 @@ import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.sl.api.salon.model.SApiError;
 import com.sl.api.salon.model.SigninResult;
 import com.sl.api.salon.model.WeChatSession;
 import com.sl.api.salon.service.TokenService;
@@ -33,7 +35,7 @@ public class SigninController {
 		
 		WeChatSession session = this.tokenService.getWechatSession(brandId, code);
 		if(session == null){
-			throw new IllegalArgumentException("wechat verify failed.");
+			return ApiResult.error(SApiError.WECHAT_VERIFY_FAILED, "wechat verify failed.");
 		}
 		
 		UserForToken user = this.tokenService.getUser(session.getOpenId());

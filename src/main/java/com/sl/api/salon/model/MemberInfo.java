@@ -12,6 +12,8 @@ public class MemberInfo implements Serializable {
 	private String uPhone;
 	private UserLevelInfo levelInfo;
 	private List<UserVoucherInfo> vouchers;
+	private ReservationInfo reservation;
+	private OrderInfo order;
 	
 	public Long getuId() {
 		return uId;
@@ -49,13 +51,26 @@ public class MemberInfo implements Serializable {
 	public void setVouchers(List<UserVoucherInfo> vouchers) {
 		this.vouchers = vouchers;
 	}
+	public ReservationInfo getReservation() {
+		return reservation;
+	}
+	public void setReservation(ReservationInfo reservation) {
+		this.reservation = reservation;
+	}
+	public OrderInfo getOrder() {
+		return order;
+	}
+	public void setOrder(OrderInfo order) {
+		this.order = order;
+	}
 	
 	public MemberInfo(){
 		super();
 	}
 	
 	public MemberInfo(Long uId, String uNm, String uIcon, String uPhone,
-			UserLevelInfo levelInfo, List<UserVoucherInfo> vouchers) {
+			UserLevelInfo levelInfo, List<UserVoucherInfo> vouchers,
+			ReservationInfo reservation, OrderInfo order) {
 		super();
 		this.uId = uId;
 		this.uNm = uNm;
@@ -63,6 +78,7 @@ public class MemberInfo implements Serializable {
 		this.uPhone = uPhone;
 		this.levelInfo = levelInfo;
 		this.vouchers = vouchers;
+		this.reservation = reservation;
+		this.order = order;
 	}
-	
 }

@@ -29,6 +29,10 @@ public class MemberService {
 	private SlUserLevelMapper slUserLevelMapper;
 	@Autowired
 	private CommonService commonService;
+	@Autowired
+	private OrderService orderService;
+	@Autowired
+	private ReservationService reservationService;
 	
 	public MemberInfo getInfo(SToken token){
 		long ts = System.currentTimeMillis();
@@ -45,7 +49,9 @@ public class MemberService {
 				this.commonService.getIconUrl(user), 
 				user.getuPhone(),
 				CollectionUtils.isNotEmpty(levels) ? levels.get(0) : null, 
-				this.getVouchers(vouchers));
+				this.getVouchers(vouchers),
+				this.reservationService.getCurrentReservation(token),
+				this.orderService.getCurrentOrder(token));
 	}
 	
 	private List<UserVoucherInfo> getVouchers(List<UserVoucherInfoFromDB> vouchers){

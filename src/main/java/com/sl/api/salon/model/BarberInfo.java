@@ -78,4 +78,12 @@ public class BarberInfo implements Serializable {
 		this.iconUrl = iconUrl;
 		this.shieldTime = shieldTime;
 	}
+	
+	public BarberInfo(SlUser barber, String iconUrl) {
+		super();
+		this.uId = barber.getuId();
+		this.uNm = barber.getuNm();
+		this.uPhone = barber.getuPhone();
+		this.iconUrl = iconUrl;
+	}
 }

@@ -215,7 +215,7 @@ public class OrderService {
 		BarberInfo bbInfo = new BarberInfo(barber, this.commonService.getIconUrl(barber), null);
 		
 		SlBarberProject bbp = this.getSlBarberProject(barber.getuId(), project.getPjId());
-		BarberProject barberProject = bbp != null ? new BarberProject(project, bbp, null) : new BarberProject(project, null);
+		BarberProject barberProject = bbp != null ? new BarberProject(project, bbp) : new BarberProject(project);
 		
 		List<ProductInfo> pdInfos = new ArrayList<>();
 		if(CollectionUtils.isNotEmpty(products)){

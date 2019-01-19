@@ -77,4 +77,20 @@ public class BarberProject implements Serializable {
 		this.pjHour = project.getPjHour();
 		this.pdIds = pdIds;
 	}
+	
+	public BarberProject(SlProject project, SlBarberProject bbp) {
+		super();
+		this.pjId = project.getPjId();
+		this.pjNm = project.getPjNm();
+		this.pjPrice = bbp.getBbpPrice();
+		this.pjHour = project.getPjHour();
+	}
+	
+	public BarberProject(SlProject project) {
+		super();
+		this.pjId = project.getPjId();
+		this.pjNm = project.getPjNm();
+		this.pjPrice = project.getPjPrice();
+		this.pjHour = project.getPjHour();
+	}
 }

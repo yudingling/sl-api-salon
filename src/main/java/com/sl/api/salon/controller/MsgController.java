@@ -1,5 +1,6 @@
 package com.sl.api.salon.controller;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.alibaba.fastjson.JSON;
 import com.sl.api.salon.service.MsgService;
 import com.sl.common.filter.FilterHttpServletRequest;
 import com.sl.common.model.db.SlMsg;
@@ -34,10 +36,13 @@ public class MsgController {
 	}
 	
 	@RequestMapping(method = RequestMethod.PUT)
-	public ApiResult update(@RequestParam(name = "msgIds[]") Set<Long> msgIds, FilterHttpServletRequest request){
-		Assert.notEmpty(msgIds, "msgIds should not be null or empty");
+	public ApiResult update(@RequestParam String msgIds, FilterHttpServletRequest request){
+		Assert.notNull(msgIds, "msgIds should not be null or empty");
 		
-		this.msgService.readMsgs(request.getToken(), msgIds);
+		Set<Long> ids = new HashSet<>(JSON.parseArray(msgIds, Long.class));
+		Assert.notEmpty(ids, "msgIds should not be null or empty");
+		
+		this.msgService.readMsgs(request.getToken(), ids);
 		
 		return ApiResult.success();
 	}
