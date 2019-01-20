@@ -134,6 +134,8 @@ spring:
       max-wait: 5000
       max-idle: 20
       min-idle: 0
+    redission:
+      enabled: true
 
 mybatis.configuration.mapUnderscoreToCamelCase: true
 

@@ -134,7 +134,7 @@ public class BarberService {
 		}
 	}
 	
-	private Map<Long, Map<Long, Long>> getShieldInfo(Set<Long> uIds){
+	public Map<Long, Map<Long, Long>> getShieldInfo(Set<Long> uIds){
 		Map<Long, List<SlReservation>> reservMap = this.getRunningReservations(uIds);
 		Map<Long, List<SlOrder>> orderMap = this.getRunningOrders(uIds);
 		Map<Long, List<SlBarberShield>> shieldMap = this.getBarberShield(uIds);

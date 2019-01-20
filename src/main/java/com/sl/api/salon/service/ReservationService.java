@@ -2,15 +2,20 @@ package com.sl.api.salon.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.redisson.api.RLock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import tk.mybatis.mapper.entity.Example;
 
+import com.google.common.collect.Sets;
 import com.sl.api.salon.mapper.SlBarberProjectMapper;
 import com.sl.api.salon.mapper.SlOrderMapper;
 import com.sl.api.salon.mapper.SlProductMapper;
@@ -23,6 +28,7 @@ import com.sl.api.salon.model.BarberInfo;
 import com.sl.api.salon.model.BarberProject;
 import com.sl.api.salon.model.ProductInfo;
 import com.sl.api.salon.model.ReservationInfo;
+import com.sl.api.salon.model.exception.BarberTimeShiledException;
 import com.sl.common.model.SToken;
 import com.sl.common.model.db.SlBarberProject;
 import com.sl.common.model.db.SlOrder;
@@ -32,8 +38,10 @@ import com.sl.common.model.db.SlReservation;
 import com.sl.common.model.db.SlReservationProduct;
 import com.sl.common.model.db.SlShop;
 import com.sl.common.model.db.SlUser;
+import com.sl.common.util.Constant;
 import com.zeasn.common.feign.api.SnowFlakeApi;
 import com.zeasn.common.model.IdGetter;
+import com.zeasn.common.redis.DistributedLock;
 
 @Service
 public class ReservationService {
@@ -56,7 +64,11 @@ public class ReservationService {
 	@Autowired
 	private SnowFlakeApi snowFlakeApi;
 	@Autowired
+	private BarberService barberService;
+	@Autowired
 	private CommonService commonService;
+	@Autowired
+	private DistributedLock distributedLock;
 	
 	public boolean hasReservation(SToken token){
 		Example example = new Example(SlReservation.class);
@@ -108,7 +120,7 @@ public class ReservationService {
 	}
 	
 	@Transactional(rollbackFor = Exception.class)
-	public ReservationInfo createReservation(SToken token, Long shopId, Long pjId, Long barberId, Long stm, Set<Long> pdIds){
+	public ReservationInfo createReservation(SToken token, Long shopId, Long pjId, Long barberId, Long stm, Set<Long> pdIds) throws BarberTimeShiledException{
 		if(!this.checkShopId(token, shopId)){
 			return null;
 		}
@@ -131,9 +143,43 @@ public class ReservationService {
 			}
 		}
 		
-		SlReservation reservation = this.newReservation(token, shopId, project, barberId, stm, products);
-		
+		SlReservation reservation = this.doReserve(token, shopId, project, barber, stm, products);
 		return reservation != null ? this.getInfo(reservation, barber, project, products) : null;
+	}
+	
+	private SlReservation doReserve(SToken token, Long shopId, SlProject project, SlUser barber, Long stm, List<SlProduct> products) throws BarberTimeShiledException{
+		String key = String.format("%s%d", Constant.LOCK_PREFIX_RESERVATION, barber.getuId());
+		RLock lock = this.distributedLock.getLock(key);
+		try{
+			lock.lock();
+			
+			Map<Long, Map<Long, Long>> shiledTs = this.barberService.getShieldInfo(Sets.newHashSet(barber.getuId()));
+			if(MapUtils.isNotEmpty(shiledTs)){
+				Map<Long, Long> shiled = shiledTs.get(barber.getuId());
+				boolean timeOk = true;
+				
+				if(MapUtils.isNotEmpty(shiled)){
+					for(Entry<Long, Long> entry : shiled.entrySet()){
+						if(entry.getKey() <= stm && entry.getValue() > stm){
+							timeOk = false;
+							break;
+						}
+					}
+				}
+				
+				if(timeOk){
+					return this.newReservation(token, shopId, project, barber.getuId(), stm, products);
+					
+				}else{
+					throw new BarberTimeShiledException(barber.getuId(), shiled);
+				}
+			}
+			
+		}finally{
+			lock.unlock();
+		}
+		
+		return null;
 	}
 	
 	private ReservationInfo getInfo(SlReservation reservation, SlUser barber, SlProject project, List<SlProduct> products){

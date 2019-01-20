@@ -13,8 +13,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSON;
+import com.sl.api.salon.model.ApiReservationFailedResult;
 import com.sl.api.salon.model.ReservationInfo;
 import com.sl.api.salon.model.SApiError;
+import com.sl.api.salon.model.exception.BarberTimeShiledException;
 import com.sl.api.salon.service.ReservationService;
 import com.sl.common.filter.FilterHttpServletRequest;
 import com.sl.common.model.SToken;
@@ -48,12 +50,19 @@ public class ReservationController {
 			return ApiResult.error(SApiError.ORDER_UNPAIED, "got unpaied order, please finish the unpaied order before reserve!");
 		}
 		
-		ReservationInfo reservation = this.reservationService.createReservation(token, shopId, pjId, barberId, stm, pdIdSet);
-		if(reservation == null){
-			return ApiResult.error(ApiError.ARGUMENT_ERROR, "create reservation failed due to error arguments");
+		try {
+			ReservationInfo reservation = this.reservationService.createReservation(token, shopId, pjId, barberId, stm, pdIdSet);
+			
+			if(reservation == null){
+				return ApiResult.error(ApiError.ARGUMENT_ERROR, "create reservation failed due to error arguments");
+				
+			}else{
+				return new ApiObjectResult<>(reservation);
+			}
+			
+		} catch (BarberTimeShiledException e) {
+			return new ApiReservationFailedResult(e);
 		}
-		
-		return new ApiObjectResult<>(reservation);
 	}
 	
 	@RequestMapping(method = RequestMethod.GET)

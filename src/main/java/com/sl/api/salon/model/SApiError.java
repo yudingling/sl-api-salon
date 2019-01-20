@@ -9,4 +9,5 @@ public class SApiError {
 	public static final int WECHAT_VERIFY_FAILED = 2004;
 	
 	public static final int ORDER_UNPAIED = 3001;
+	public static final int RESERVATION_TIME_SHILED = 3002;
 }
