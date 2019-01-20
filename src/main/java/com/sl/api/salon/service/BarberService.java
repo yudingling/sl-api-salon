@@ -17,7 +17,6 @@ import tk.mybatis.mapper.entity.Example;
 import com.sl.api.salon.mapper.SlBarberProjectMapper;
 import com.sl.api.salon.mapper.SlBarberShieldMapper;
 import com.sl.api.salon.mapper.SlOrderMapper;
-import com.sl.api.salon.mapper.SlProductMapper;
 import com.sl.api.salon.mapper.SlProjectMapper;
 import com.sl.api.salon.mapper.SlProjectProductMapper;
 import com.sl.api.salon.mapper.SlReservationMapper;
@@ -25,12 +24,10 @@ import com.sl.api.salon.mapper.SlUserMapper;
 import com.sl.api.salon.model.BarberInfo;
 import com.sl.api.salon.model.BarberProject;
 import com.sl.api.salon.model.BarberReservation;
-import com.sl.api.salon.model.ProductInfo;
 import com.sl.common.model.SToken;
 import com.sl.common.model.db.SlBarberProject;
 import com.sl.common.model.db.SlBarberShield;
 import com.sl.common.model.db.SlOrder;
-import com.sl.common.model.db.SlProduct;
 import com.sl.common.model.db.SlProject;
 import com.sl.common.model.db.SlProjectProduct;
 import com.sl.common.model.db.SlReservation;
@@ -46,8 +43,6 @@ public class BarberService {
 	private SlProjectMapper slProjectMapper;
 	@Autowired
 	private SlProjectProductMapper slProjectProductMapper;
-	@Autowired
-	private SlProductMapper slProductMapper;
 	@Autowired
 	private SlReservationMapper slReservationMapper;
 	@Autowired
@@ -91,22 +86,7 @@ public class BarberService {
 			}
 		}
 		
-		return new BarberReservation(bbInfos, this.getProductInfo(token));
-	}
-	
-	private Map<Long, ProductInfo> getProductInfo(SToken token){
-		Map<Long, ProductInfo> productMap = new HashMap<>();
-		
-		List<SlProduct> products = this.getAllProducts(token);
-		if(CollectionUtils.isNotEmpty(products)){
-			for(SlProduct pd : products){
-				String iconUrl = this.commonService.getIconUrl(pd);
-				
-				productMap.put(pd.getPdId(), new ProductInfo(pd, iconUrl));
-			}
-		}
-		
-		return productMap;
+		return new BarberReservation(bbInfos);
 	}
 	
 	private BarberInfo createBarberInfo(SlUser barber, List<SlBarberProject> bbProjects, Map<Long, SlProject> projectMap, 
@@ -317,13 +297,6 @@ public class BarberService {
 	    }
 		
 	    return pjpMap;
-	}
-	
-	private List<SlProduct> getAllProducts(SToken token){
-		Example example = new Example(SlProduct.class);
-	    example.createCriteria().andEqualTo("bdId", token.getBrandId()).andEqualTo("pdEnable", 1);
-	    
-	    return this.slProductMapper.selectByExample(example);
 	}
 	
 }

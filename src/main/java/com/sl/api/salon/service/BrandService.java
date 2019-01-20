@@ -14,15 +14,18 @@ import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
 
 import com.sl.api.salon.mapper.SlBrandMapper;
+import com.sl.api.salon.mapper.SlProductMapper;
 import com.sl.api.salon.mapper.SlShopEventMapper;
 import com.sl.api.salon.mapper.SlShopHolidayMapper;
 import com.sl.api.salon.mapper.SlShopImageMapper;
 import com.sl.api.salon.mapper.SlShopMapper;
 import com.sl.api.salon.model.BrandInfo;
+import com.sl.api.salon.model.ProductInfo;
 import com.sl.api.salon.model.ShopEvent;
 import com.sl.api.salon.model.ShopHoliday;
 import com.sl.common.model.SToken;
 import com.sl.common.model.db.SlBrand;
+import com.sl.common.model.db.SlProduct;
 import com.sl.common.model.db.SlShop;
 import com.sl.common.model.db.SlShopEvent;
 import com.sl.common.model.db.SlShopHoliday;
@@ -41,6 +44,8 @@ public class BrandService {
 	@Autowired
 	private SlShopEventMapper slShopEventMapper;
 	@Autowired
+	private SlProductMapper slProductMapper;
+	@Autowired
 	private CommonService commonService;
 	
 	public BrandInfo getBrandInfo(SToken token, double lgtd, double lttd){
@@ -55,7 +60,7 @@ public class BrandService {
 		
 		String brandLogo = this.commonService.getIconUrl(brand);
 		
-		return new BrandInfo(brand, brandLogo, shops, holidayMap, imageMap, eventMap, lgtd, lttd);
+		return new BrandInfo(brand, brandLogo, shops, holidayMap, imageMap, eventMap, this.getProductInfo(token), lgtd, lttd);
 	}
 	
 	private List<SlShop> getShops(String bdId){
@@ -64,6 +69,21 @@ public class BrandService {
 	    example.orderBy("crtTs").asc();
 	    
 	    return this.slShopMapper.selectByExample(example);
+	}
+	
+	private Map<Long, ProductInfo> getProductInfo(SToken token){
+		Map<Long, ProductInfo> productMap = new HashMap<>();
+		
+		List<SlProduct> products = this.getAllProducts(token);
+		if(CollectionUtils.isNotEmpty(products)){
+			for(SlProduct pd : products){
+				String iconUrl = this.commonService.getIconUrl(pd);
+				
+				productMap.put(pd.getPdId(), new ProductInfo(pd, iconUrl));
+			}
+		}
+		
+		return productMap;
 	}
 	
 	private Map<Long, List<String>> getShopImages(String bdId){
@@ -136,5 +156,13 @@ public class BrandService {
 		}
 		
 		return holidayMap;
+	}
+	
+	private List<SlProduct> getAllProducts(SToken token){
+		Example example = new Example(SlProduct.class);
+	    example.createCriteria().andEqualTo("bdId", token.getBrandId()).andEqualTo("pdEnable", 1);
+	    example.orderBy("pdPrice").desc();
+	    
+	    return this.slProductMapper.selectByExample(example);
 	}
 }

@@ -19,6 +19,7 @@ public class BrandInfo implements Serializable {
 	private String bdUrl;
 	private List<ShopInfo> shops;
 	private Integer recommendShopIndex = -1;
+	private Map<Long, ProductInfo> pdInfo;
 	
 	public String getBdId() {
 		return bdId;
@@ -56,24 +57,19 @@ public class BrandInfo implements Serializable {
 	public void setRecommendShopIndex(Integer recommendShopIndex) {
 		this.recommendShopIndex = recommendShopIndex;
 	}
+	public Map<Long, ProductInfo> getPdInfo() {
+		return pdInfo;
+	}
+	public void setPdInfo(Map<Long, ProductInfo> pdInfo) {
+		this.pdInfo = pdInfo;
+	}
 	
 	public BrandInfo(){
 		super();
 	}
 	
-	public BrandInfo(String bdId, String bdNm, String bdUrl, String bdLogo, 
-			List<ShopInfo> shops, Integer recommendShopIndex) {
-		super();
-		this.bdId = bdId;
-		this.bdNm = bdNm;
-		this.bdLogo = bdLogo;
-		this.bdUrl = bdUrl;
-		this.shops = shops;
-		this.recommendShopIndex = recommendShopIndex;
-	}
-	
 	public BrandInfo(SlBrand brand, String brandLogo, List<SlShop> shops, Map<Long, List<ShopHoliday>> holidayMap, 
-			Map<Long, List<String>> imageMap, Map<Long, ShopEvent> eventMap,
+			Map<Long, List<String>> imageMap, Map<Long, ShopEvent> eventMap, Map<Long, ProductInfo> pdInfo,
 			double lgtd, double lttd) {
 		super();
 		this.bdId = brand.getBdId();
@@ -81,6 +77,7 @@ public class BrandInfo implements Serializable {
 		this.bdUrl = brand.getBdUrl();
 		this.shops = new ArrayList<>();
 		this.bdLogo = brandLogo;
+		this.pdInfo = pdInfo;
 		
 		if(CollectionUtils.isNotEmpty(shops)){
 			List<DistanceCmp> distance = new ArrayList<>();

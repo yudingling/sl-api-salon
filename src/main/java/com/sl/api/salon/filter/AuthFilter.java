@@ -26,12 +26,6 @@ public class AuthFilter extends BaseFilter {
 	private AuthService authService;
 	private Map<UserType, Set<String>> roleApis;
 	
-	private static Map<String, String[]> bindMap;
-	
-	public static void setBindMap(Map<String, String[]> pathBindMap) {
-		bindMap = pathBindMap;
-	}
-	
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
 		ApplicationContext ctx = WebApplicationContextUtils.getWebApplicationContext(filterConfig.getServletContext());
@@ -57,19 +51,6 @@ public class AuthFilter extends BaseFilter {
 		return apis.contains(path) || this.wildcardCheck(apis, path) != null;
 	}
 	
-	private boolean authOnBindCheck(Set<String> apis, String path){
-		String[] bindAuths = bindMap.get(path);
-		if (bindAuths != null && bindAuths.length > 0) {
-			for (String bindPath : bindAuths) {
-				if(this.matchApiPath(apis, bindPath)){
-					return true;
-				}
-			}
-		}
-		
-		return false;
-	}
-	
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 		FilterHttpServletRequest req = (FilterHttpServletRequest) request;
@@ -81,7 +62,7 @@ public class AuthFilter extends BaseFilter {
 		
 		Set<String> apis = this.roleApis.get(req.getToken().getUserType());
 		
-		if(CollectionUtils.isNotEmpty(apis) && (this.matchApiPath(apis, path) || this.authOnBindCheck(apis, path))){
+		if(CollectionUtils.isNotEmpty(apis) && (this.matchApiPath(apis, path))){
 			chain.doFilter(request, response);
 			
 		}else{

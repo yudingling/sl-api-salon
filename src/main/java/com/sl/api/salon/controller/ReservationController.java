@@ -1,12 +1,14 @@
 package com.sl.api.salon.controller;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import net.logstash.logback.encoder.org.apache.commons.lang.StringUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -72,12 +74,43 @@ public class ReservationController {
 		return new ApiObjectResult<>(reservation);
 	}
 	
+	@SuppressWarnings({ "rawtypes" })
 	@RequestMapping(method = RequestMethod.DELETE)
-	public ApiResult delete(@RequestParam Long rvId, FilterHttpServletRequest request){
-		Assert.notNull(rvId, "rvId should not be null or empty");
+	public ApiResult delete(@RequestBody String body, FilterHttpServletRequest request){
+		Assert.hasText(body, "body should not be null or empty");
+		
+		Map data = JSON.parseObject(body, Map.class);
+		Object rvIdStr = data.get("rvId");
+		Assert.notNull(rvIdStr, "rvId should not be null or empty");
+		
+		Long rvId = Long.parseLong(rvIdStr.toString()) ;
 		
 		boolean deleted = this.reservationService.deleteReservation(request.getToken(), rvId);
 		
 		return deleted ? ApiResult.success() : ApiResult.error(ApiError.ARGUMENT_ERROR, "cancel reservation failed");
+	}
+	
+	@SuppressWarnings({ "rawtypes" })
+	@RequestMapping(method = RequestMethod.PUT)
+	public ApiResult update(@RequestBody String body, FilterHttpServletRequest request){
+		Assert.hasText(body, "body should not be null or empty");
+		
+		Map data = JSON.parseObject(body, Map.class);
+		
+		Object rvIdStr = data.get("rvId");
+		Assert.notNull(rvIdStr, "rvId should not be null or empty");
+		Long rvId = Long.parseLong(rvIdStr.toString()) ;
+		
+		Object oldPdIdStr = data.get("oldPdId");
+		Assert.notNull(oldPdIdStr, "oldPdId should not be null or empty");
+		Long oldPdId = Long.parseLong(oldPdIdStr.toString());
+		
+		Object newPdIdStr = data.get("newPdId");
+		Assert.notNull(newPdIdStr, "newPdId should not be null or empty");
+		Long newPdId = Long.parseLong(newPdIdStr.toString());
+		
+		boolean saved = this.reservationService.updateReservationProduct(request.getToken(), rvId, oldPdId, newPdId);
+		
+		return saved ? ApiResult.success() : ApiResult.error(ApiError.ARGUMENT_ERROR, "change product failed");
 	}
 }

@@ -11,7 +11,7 @@ import com.zeasn.common.mybatis.MyMapper;
 
 public interface SlReservationProductMapper extends MyMapper<SlReservationProduct> {
 	
-	@Select("select a.* from sl_product a inner join sl_reservation_product b on a.pd_id = b.pd_id and b.rv_id = #{rvId}")
+	@Select("select a.* from sl_product a inner join sl_reservation_product b on a.pd_id = b.pd_id and b.rv_id = #{rvId}  order by b.pdtp_id")
 	List<SlProduct> getProductFromReservation(@Param("rvId") Long rvId);
 
 }

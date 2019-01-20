@@ -108,6 +108,7 @@ public class ReservationService {
 	    }
 	}
 	
+	@Transactional(rollbackFor = Exception.class)
 	public boolean deleteReservation(SToken token, Long rvId){
 		SlReservation upt = new SlReservation();
 		upt.setUptTs(System.currentTimeMillis());
@@ -117,6 +118,25 @@ public class ReservationService {
 	    example.createCriteria().andEqualTo("rvId", rvId).andEqualTo("rvUid", token.getUserId()).andEqualTo("rvActive", 0);
 		
 		return this.slReservationMapper.updateByExampleSelective(upt, example) == 1;
+	}
+	
+	@Transactional(rollbackFor = Exception.class)
+	public boolean updateReservationProduct(SToken token, Long rvId, Long oldPdId, Long newPdId){
+		Example example = new Example(SlReservationProduct.class);
+	    example.createCriteria().andEqualTo("rvId", rvId).andEqualTo("rvUid", token.getUserId()).andEqualTo("pdId", oldPdId);
+	    
+	    SlProduct newPd = this.slProductMapper.selectByPrimaryKey(newPdId);
+    	
+    	if(newPd != null && this.slReservationProductMapper.deleteByExample(example) == 1){
+    		Long ts = System.currentTimeMillis();
+    		
+    		SlReservationProduct sp = new SlReservationProduct(
+		    		this.snowFlakeApi.nextId(), rvId, newPd.getPdtpId(), newPd.getPdId(), token.getUserId(), ts, ts);
+    		
+    		return this.slReservationProductMapper.insert(sp) == 1;
+    	}
+	    
+	    return false;
 	}
 	
 	@Transactional(rollbackFor = Exception.class)
@@ -239,7 +259,7 @@ public class ReservationService {
 				List<SlReservationProduct> rps = new ArrayList<>();
 				
 				for(SlProduct pd : products){
-					rps.add(new SlReservationProduct(idGetter.next(), reserve.getRvId(), pd.getPdtpId(), pd.getPdId(), ts, ts));
+					rps.add(new SlReservationProduct(idGetter.next(), reserve.getRvId(), pd.getPdtpId(), pd.getPdId(), token.getUserId(), ts, ts));
 				}
 				
 				this.slReservationProductMapper.insertList(rps);

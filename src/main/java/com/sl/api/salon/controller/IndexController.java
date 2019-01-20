@@ -12,6 +12,7 @@ import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+
 import com.sl.api.salon.model.WeChatSession;
 import com.sl.api.salon.service.TokenService;
 import com.sl.common.model.UserForToken;
