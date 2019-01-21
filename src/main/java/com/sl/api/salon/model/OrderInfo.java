@@ -28,6 +28,7 @@ public class OrderInfo implements Serializable {
 	private Long odPaiedTs;
 	private String odPaiedTp;
 	private Integer odComplaint;
+	private Integer odConfirm;
 	private List<SlOrderEvaluation> evaList;
 	
 	public Long getOdId() {
@@ -144,6 +145,12 @@ public class OrderInfo implements Serializable {
 	public void setOdComplaint(Integer odComplaint) {
 		this.odComplaint = odComplaint;
 	}
+	public Integer getOdConfirm() {
+		return odConfirm;
+	}
+	public void setOdConfirm(Integer odConfirm) {
+		this.odConfirm = odConfirm;
+	}
 	public List<SlOrderEvaluation> getEvaList() {
 		return evaList;
 	}
@@ -160,7 +167,8 @@ public class OrderInfo implements Serializable {
 			Long odEtm, Double odPjPrice, Double odPdPrice,
 			Double odTotalPrice, Double odDiscount, Double odOfferPrice,
 			Double odVoucherPrice, Double odPayPrice, Integer odPaied,
-			Long odPaiedTs, String odPaiedTp, Integer odComplaint, List<SlOrderEvaluation> evaList) {
+			Long odPaiedTs, String odPaiedTp, Integer odComplaint, Integer odConfirm, 
+			List<SlOrderEvaluation> evaList) {
 		super();
 		this.odId = odId;
 		this.shopId = shopId;
@@ -181,6 +189,7 @@ public class OrderInfo implements Serializable {
 		this.odPaiedTs = odPaiedTs;
 		this.odPaiedTp = odPaiedTp;
 		this.odComplaint = odComplaint;
+		this.odConfirm = odConfirm;
 		this.evaList = evaList;
 	}
 	
@@ -202,5 +211,6 @@ public class OrderInfo implements Serializable {
 		this.odPaiedTs = order.getOdPaiedTs();
 		this.odPaiedTp = order.getOdPaiedTp();
 		this.odComplaint = order.getOdComplaint();
+		this.odConfirm = order.getOdConfirm();
 	}
 }

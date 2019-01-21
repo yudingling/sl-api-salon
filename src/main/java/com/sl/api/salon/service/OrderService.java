@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -142,22 +141,13 @@ public class OrderService {
 	}
 	
 	@Transactional(rollbackFor = Exception.class)
-	public OrderInfo createOrder(SToken token, Long rvId, Set<Long> pdIds){
+	public OrderInfo createOrder(SToken token, Long rvId){
 		SlReservation reservation = this.checkReservation(token, rvId);
 		if(reservation == null){
 			return null;
 		}
 		
-		List<SlProduct> products = null;
-		if(CollectionUtils.isEmpty(pdIds)){
-			products = this.slReservationProductMapper.getProductFromReservation(rvId);
-			
-		}else{
-			products = this.checkPdIds(token, pdIds);
-			if(products == null || products.size() != pdIds.size()){
-				return null;
-			}
-		}
+		List<SlProduct> products = this.slReservationProductMapper.getProductFromReservation(rvId);
 		
 		SlUser barber = this.slUserMapper.selectByPrimaryKey(reservation.getRvBarberUid());
 		if(barber == null){
@@ -255,6 +245,7 @@ public class OrderService {
 		Double disCount = this.getUserDiscount(reservation.getRvUid(), ts);
 		Double payPrice = pjPrice * disCount + pdPrice;
 		
+		//create a order which waiting for confirm
 		SlOrder order = new SlOrder(
 				idGetter.next(), 
 				reservation.getRvId(), 
@@ -275,6 +266,7 @@ public class OrderService {
 				null, 
 				null, 
 				0, 
+				0,
 				ts,
 				ts);
 		
@@ -315,13 +307,6 @@ public class OrderService {
 	    
 	    List<SlReservation> data = this.slReservationMapper.selectByExample(example);
 	    return CollectionUtils.isNotEmpty(data) ? data.get(0) : null;
-	}
-	
-	private List<SlProduct> checkPdIds(SToken token, Set<Long> pdIds){
-		Example example = new Example(SlProduct.class);
-	    example.createCriteria().andIn("pdId", pdIds).andEqualTo("bdId", token.getBrandId()).andEqualTo("pdEnable", 1);
-	    
-	    return this.slProductMapper.selectByExample(example);
 	}
 	
 	private SlBarberProject getSlBarberProject(Long barberId, Long projectId){
