@@ -136,6 +136,11 @@ spring:
       min-idle: 0
     redission:
       enabled: true
+  rabbitmq:
+    host: 10.8.10.100
+    port: 5672
+    username: admin
+    password: admin
 
 mybatis.configuration.mapUnderscoreToCamelCase: true
 

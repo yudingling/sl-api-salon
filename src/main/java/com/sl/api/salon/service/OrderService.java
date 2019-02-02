@@ -6,7 +6,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+
 import org.apache.commons.collections.CollectionUtils;
+import org.springframework.amqp.core.FanoutExchange;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,6 +43,7 @@ import com.sl.common.model.db.SlProduct;
 import com.sl.common.model.db.SlProject;
 import com.sl.common.model.db.SlReservation;
 import com.sl.common.model.db.SlUser;
+import com.sl.common.model.mq.OrderConfirmedMsg;
 import com.zeasn.common.feign.api.SnowFlakeApi;
 import com.zeasn.common.model.IdGetter;
 
@@ -67,6 +73,11 @@ public class OrderService {
 	private SnowFlakeApi snowFlakeApi;
 	@Autowired
 	private CommonService commonService;
+	
+	@Autowired
+    private RabbitTemplate template;
+	@Resource
+	private FanoutExchange websocketExchange;
 	
 	public List<HistoryOrder> getHistoryOrders(SToken token, Integer startIndex, Integer size){
 		List<HistoryOrder> orders = this.slOrderMapper.getHistoryOrders(token.getUserId(), startIndex, size);
@@ -165,6 +176,25 @@ public class OrderService {
 		SlOrder order = this.newOrder(reservation, pjPrice, products);
 		
 		return order != null ? this.getInfo(order, barber, project, products, null) : null;
+	}
+	
+	@Transactional(rollbackFor = Exception.class)
+	public boolean activeOrder(SToken token, Long odId){
+		SlOrder order = this.slOrderMapper.selectByPrimaryKey(odId);
+		if(order != null && order.getOdConfirm() == 0){
+			SlOrder upt = new SlOrder();
+			upt.setOdId(odId);
+			upt.setOdConfirm(1);
+			upt.setUptTs(System.currentTimeMillis());
+			
+			if(this.slOrderMapper.updateByPrimaryKeySelective(upt) == 1){
+				OrderConfirmedMsg msg = new OrderConfirmedMsg(order.getOdUid(), order.getOdId());
+				
+				this.template.convertAndSend(this.websocketExchange.getName(), "", msg);
+			}
+		}
+		
+		return false;
 	}
 	
 	public OrderInfo getCurrentOrder(SToken token){

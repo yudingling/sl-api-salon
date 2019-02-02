@@ -1,11 +1,16 @@
 package com.sl.api.salon.controller;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.alibaba.fastjson.JSON;
 import com.sl.api.salon.model.OrderInfo;
 import com.sl.api.salon.model.SApiError;
 import com.sl.api.salon.service.OrderService;
@@ -49,10 +54,19 @@ public class OrderController {
 		return new ApiObjectResult<>(order);
 	}
 	
+	@SuppressWarnings("rawtypes")
 	@RequestMapping(method = RequestMethod.PUT)
-	public ApiResult update(@RequestParam Long rvId, FilterHttpServletRequest request){
-		OrderInfo order = this.orderService.getCurrentOrder(request.getToken());
+	public ApiResult update(@RequestBody String body, FilterHttpServletRequest request){
+		Assert.hasText(body, "body should not be null or empty");
 		
-		return new ApiObjectResult<>(order);
+		Map data = JSON.parseObject(body, Map.class);
+		
+		Object odIdStr = data.get("odId");
+		Assert.notNull(odIdStr, "odId should not be null or empty");
+		Long odId = Long.parseLong(odIdStr.toString()) ;
+		
+		Boolean ok = this.orderService.activeOrder(request.getToken(), odId);
+		
+		return ok ? ApiResult.success() : ApiResult.error(SApiError.ORDER_CONFIRM_FAILED, "confirm order failed");
 	}
 }
