@@ -14,6 +14,7 @@ public class HistoryOrder implements Serializable {
 	private String pjNm;
 	private Double odTotalPrice;
 	private Integer odEva;
+	private Integer odConfirm;
 	
 	public Long getOdId() {
 		return odId;
@@ -86,14 +87,22 @@ public class HistoryOrder implements Serializable {
 	public void setOdEva(Integer odEva) {
 		this.odEva = odEva;
 	}
-
+	
+	public Integer getOdConfirm() {
+		return odConfirm;
+	}
+	
+	public void setOdConfirm(Integer odConfirm) {
+		this.odConfirm = odConfirm;
+	}
+	
 	public HistoryOrder(){
 		super();
 	}
 	
 	public HistoryOrder(Long odId, Long shopId, String shopNm, Long odUid,
 			Long odStm, Long pjId, String pjNm, Double odTotalPrice,
-			Integer odEva) {
+			Integer odEva, Integer odConfirm) {
 		super();
 		this.odId = odId;
 		this.shopId = shopId;
@@ -104,5 +113,6 @@ public class HistoryOrder implements Serializable {
 		this.pjNm = pjNm;
 		this.odTotalPrice = odTotalPrice;
 		this.odEva = odEva;
+		this.odConfirm = odConfirm;
 	}
 }

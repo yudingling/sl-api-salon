@@ -29,6 +29,7 @@ import com.sl.api.salon.model.BarberProject;
 import com.sl.api.salon.model.ProductInfo;
 import com.sl.api.salon.model.ReservationInfo;
 import com.sl.api.salon.model.exception.BarberTimeShiledException;
+import com.sl.common.model.OrderConfirmStatus;
 import com.sl.common.model.SToken;
 import com.sl.common.model.db.SlBarberProject;
 import com.sl.common.model.db.SlOrder;
@@ -226,7 +227,7 @@ public class ReservationService {
 	
 	public boolean hasUnPaiedOrder(SToken token){
 		Example example = new Example(SlOrder.class);
-	    example.createCriteria().andEqualTo("odUid", token.getUserId()).andEqualTo("odPaied", 0);
+	    example.createCriteria().andEqualTo("odUid", token.getUserId()).andEqualTo("odPaied", 0).andNotEqualTo("odConfirm", OrderConfirmStatus.CANCELED.getValue());
 	    
 	    return this.slOrderMapper.selectCountByExample(example) > 0;
 	}

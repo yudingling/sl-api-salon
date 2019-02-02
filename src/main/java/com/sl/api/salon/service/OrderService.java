@@ -34,6 +34,7 @@ import com.sl.api.salon.model.HistoryOrder;
 import com.sl.api.salon.model.OrderInfo;
 import com.sl.api.salon.model.ProductInfo;
 import com.sl.api.salon.model.UserLevelInfo;
+import com.sl.common.model.OrderConfirmStatus;
 import com.sl.common.model.SToken;
 import com.sl.common.model.db.SlBarberProject;
 import com.sl.common.model.db.SlOrder;
@@ -117,7 +118,7 @@ public class OrderService {
 	
 	public OrderInfo getHistoryOrder(SToken token, Long odId){
 		Example example = new Example(SlOrder.class);
-	    example.createCriteria().andEqualTo("odId", odId).andEqualTo("odUid", token.getUserId()).andEqualTo("odPaied", 1);
+	    example.createCriteria().andEqualTo("odId", odId).andEqualTo("odUid", token.getUserId());
 	    
 	    List<SlOrder> data = this.slOrderMapper.selectByExample(example);
 	    if(CollectionUtils.isNotEmpty(data)){
@@ -181,10 +182,10 @@ public class OrderService {
 	@Transactional(rollbackFor = Exception.class)
 	public boolean activeOrder(SToken token, Long odId){
 		SlOrder order = this.slOrderMapper.selectByPrimaryKey(odId);
-		if(order != null && order.getOdConfirm() == 0){
+		if(order != null && order.getOdConfirm() == OrderConfirmStatus.UNCONFIRM.getValue()){
 			SlOrder upt = new SlOrder();
 			upt.setOdId(odId);
-			upt.setOdConfirm(1);
+			upt.setOdConfirm(OrderConfirmStatus.CONFIRMED.getValue());
 			upt.setUptTs(System.currentTimeMillis());
 			
 			if(this.slOrderMapper.updateByPrimaryKeySelective(upt) == 1){
@@ -199,7 +200,7 @@ public class OrderService {
 	
 	public OrderInfo getCurrentOrder(SToken token){
 		Example example = new Example(SlOrder.class);
-	    example.createCriteria().andEqualTo("odUid", token.getUserId()).andEqualTo("odPaied", 0);
+	    example.createCriteria().andEqualTo("odUid", token.getUserId()).andEqualTo("odPaied", 0).andNotEqualTo("odConfirm", OrderConfirmStatus.CANCELED.getValue());
 	    
 	    List<SlOrder> data = this.slOrderMapper.selectByExample(example);
 	    if(CollectionUtils.isNotEmpty(data)){
@@ -296,7 +297,7 @@ public class OrderService {
 				null, 
 				null, 
 				0, 
-				0,
+				OrderConfirmStatus.UNCONFIRM.getValue(),
 				ts,
 				ts);
 		

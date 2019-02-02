@@ -24,6 +24,7 @@ import com.sl.api.salon.mapper.SlUserMapper;
 import com.sl.api.salon.model.BarberInfo;
 import com.sl.api.salon.model.BarberProject;
 import com.sl.api.salon.model.BarberReservation;
+import com.sl.common.model.OrderConfirmStatus;
 import com.sl.common.model.SToken;
 import com.sl.common.model.db.SlBarberProject;
 import com.sl.common.model.db.SlBarberShield;
@@ -189,7 +190,11 @@ public class BarberService {
 	
 	private Map<Long, List<SlOrder>> getRunningOrders(Set<Long> uIds){
 		Example example = new Example(SlOrder.class);
-	    example.createCriteria().andIn("odBarberUid", uIds).andEqualTo("odPaied", 0).andGreaterThan("odEtm", System.currentTimeMillis());
+	    example.createCriteria()
+	    	.andIn("odBarberUid", uIds)
+	    	.andEqualTo("odPaied", 0)
+	    	.andGreaterThan("odEtm", System.currentTimeMillis())
+	    	.andNotEqualTo("odConfirm", OrderConfirmStatus.CANCELED.getValue());
 	    example.selectProperties("odId", "odBarberUid", "odStm", "odEtm");
 	    
 	    List<SlOrder> orders = this.slOrderMapper.selectByExample(example);

@@ -12,7 +12,7 @@ import tk.mybatis.mapper.entity.Example;
 import com.sl.api.salon.mapper.SlLevelMapper;
 import com.sl.api.salon.mapper.SlUserLevelMapper;
 import com.sl.api.salon.mapper.SlUserLevelOrderMapper;
-import com.sl.api.salon.model.PayType;
+import com.sl.common.model.PayType;
 import com.sl.common.model.SToken;
 import com.sl.common.model.db.SlLevel;
 import com.sl.common.model.db.SlUserLevel;
