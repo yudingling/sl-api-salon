@@ -65,7 +65,7 @@ public class OrderController {
 		Assert.notNull(odIdStr, "odId should not be null or empty");
 		Long odId = Long.parseLong(odIdStr.toString()) ;
 		
-		Boolean ok = this.orderService.activeOrder(request.getToken(), odId);
+		Boolean ok = this.orderService.activeOrder(odId);
 		
 		return ok ? ApiResult.success() : ApiResult.error(SApiError.ORDER_CONFIRM_FAILED, "confirm order failed");
 	}

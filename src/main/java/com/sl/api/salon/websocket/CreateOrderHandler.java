@@ -149,7 +149,7 @@ public class CreateOrderHandler extends TextWebSocketHandler {
 		return new ApiObjectResult<>(order);
 	}
 	
-	class RequestData{
+	static class RequestData{
 		private Long rvId;
 		
 		public Long getRvId() {
@@ -170,7 +170,7 @@ public class CreateOrderHandler extends TextWebSocketHandler {
 		}
 	}
 	
-	class ResponseData{
+	static class ResponseData{
 		/**
 		 * 0: order created,  1: order confirm
 		 */

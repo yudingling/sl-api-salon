@@ -180,7 +180,7 @@ public class OrderService {
 	}
 	
 	@Transactional(rollbackFor = Exception.class)
-	public boolean activeOrder(SToken token, Long odId){
+	public boolean activeOrder(Long odId){
 		SlOrder order = this.slOrderMapper.selectByPrimaryKey(odId);
 		if(order != null && order.getOdConfirm() == OrderConfirmStatus.UNCONFIRM.getValue()){
 			SlOrder upt = new SlOrder();
@@ -192,6 +192,8 @@ public class OrderService {
 				OrderConfirmedMsg msg = new OrderConfirmedMsg(order.getOdUid(), order.getOdId());
 				
 				this.template.convertAndSend(this.websocketExchange.getName(), "", msg);
+				
+				return true;
 			}
 		}
 		
@@ -319,11 +321,22 @@ public class OrderService {
 				this.slOrderProductMapper.insertList(ops);
 			}
 			
+			this.activeReservation(reservation.getRvId());
+			
 			return order;
 			
 		}else{
 			return null;
 		}
+	}
+	
+	private void activeReservation(Long rvId){
+		SlReservation sr = new SlReservation();
+		sr.setRvId(rvId);
+		sr.setUptTs(System.currentTimeMillis());
+		sr.setRvActive(1);
+		
+		this.slReservationMapper.updateByPrimaryKeySelective(sr);
 	}
 	
 	private Double getUserDiscount(Long uId, Long ts){
