@@ -11,4 +11,5 @@ public class SApiError {
 	public static final int ORDER_UNPAIED = 3001;
 	public static final int RESERVATION_TIME_SHILED = 3002;
 	public static final int ORDER_CONFIRM_FAILED = 3003;
+	public static final int ORDER_CANCEL_FAILED = 3004;
 }

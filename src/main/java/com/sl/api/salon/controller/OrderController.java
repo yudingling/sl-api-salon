@@ -69,4 +69,20 @@ public class OrderController {
 		
 		return ok ? ApiResult.success() : ApiResult.error(SApiError.ORDER_CONFIRM_FAILED, "confirm order failed");
 	}
+	
+	@SuppressWarnings("rawtypes")
+	@RequestMapping(method = RequestMethod.DELETE)
+	public ApiResult cancelOrder(@RequestBody String body, FilterHttpServletRequest request){
+		Assert.hasText(body, "body should not be null or empty");
+		
+		Map data = JSON.parseObject(body, Map.class);
+		
+		Object odIdStr = data.get("odId");
+		Assert.notNull(odIdStr, "odId should not be null or empty");
+		Long odId = Long.parseLong(odIdStr.toString()) ;
+		
+		Boolean ok = this.orderService.cancelOrder(request.getToken(), odId);
+		
+		return ok ? ApiResult.success() : ApiResult.error(SApiError.ORDER_CANCEL_FAILED, "cancel order failed");
+	}
 }

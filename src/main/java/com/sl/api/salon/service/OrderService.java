@@ -184,11 +184,13 @@ public class OrderService {
 		SlOrder order = this.slOrderMapper.selectByPrimaryKey(odId);
 		if(order != null && order.getOdConfirm() == OrderConfirmStatus.UNCONFIRM.getValue()){
 			SlOrder upt = new SlOrder();
-			upt.setOdId(odId);
 			upt.setOdConfirm(OrderConfirmStatus.CONFIRMED.getValue());
 			upt.setUptTs(System.currentTimeMillis());
 			
-			if(this.slOrderMapper.updateByPrimaryKeySelective(upt) == 1){
+			Example example = new Example(SlOrder.class);
+		    example.createCriteria().andEqualTo("odId", odId).andEqualTo("odConfirm", OrderConfirmStatus.UNCONFIRM.getValue());
+		    
+			if(this.slOrderMapper.updateByExampleSelective(upt, example) == 1){
 				OrderConfirmedMsg msg = new OrderConfirmedMsg(order.getOdUid(), order.getOdId());
 				
 				this.template.convertAndSend(this.websocketExchange.getName(), "", msg);
@@ -198,6 +200,24 @@ public class OrderService {
 		}
 		
 		return false;
+	}
+	
+	@Transactional(rollbackFor = Exception.class)
+	public boolean cancelOrder(SToken token, Long odId){
+		Example example = new Example(SlOrder.class);
+	    example.createCriteria().andEqualTo("odId", odId).andEqualTo("odUid", token.getUserId()).andEqualTo("odConfirm", OrderConfirmStatus.UNCONFIRM.getValue());
+		
+		int len = this.slOrderMapper.selectCountByExample(example);
+		if(len == 1){
+			SlOrder upt = new SlOrder();
+			upt.setOdConfirm(OrderConfirmStatus.CANCELED.getValue());
+			upt.setUptTs(System.currentTimeMillis());
+		    
+			return this.slOrderMapper.updateByExampleSelective(upt, example) == 1;
+			
+		}else{
+			return false;
+		}
 	}
 	
 	public OrderInfo getCurrentOrder(SToken token){
