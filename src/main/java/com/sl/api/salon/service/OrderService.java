@@ -28,12 +28,14 @@ import com.sl.api.salon.mapper.SlReservationMapper;
 import com.sl.api.salon.mapper.SlReservationProductMapper;
 import com.sl.api.salon.mapper.SlUserLevelMapper;
 import com.sl.api.salon.mapper.SlUserMapper;
+import com.sl.api.salon.mapper.SlUserVoucherMapper;
 import com.sl.api.salon.model.BarberInfo;
 import com.sl.api.salon.model.BarberProject;
 import com.sl.api.salon.model.HistoryOrder;
 import com.sl.api.salon.model.OrderInfo;
 import com.sl.api.salon.model.ProductInfo;
 import com.sl.api.salon.model.UserLevelInfo;
+import com.sl.api.salon.util.FloatUtil;
 import com.sl.common.model.OrderConfirmStatus;
 import com.sl.common.model.SToken;
 import com.sl.common.model.db.SlBarberProject;
@@ -44,6 +46,7 @@ import com.sl.common.model.db.SlProduct;
 import com.sl.common.model.db.SlProject;
 import com.sl.common.model.db.SlReservation;
 import com.sl.common.model.db.SlUser;
+import com.sl.common.model.db.SlUserVoucher;
 import com.sl.common.model.mq.OrderConfirmedMsg;
 import com.zeasn.common.feign.api.SnowFlakeApi;
 import com.zeasn.common.model.IdGetter;
@@ -70,6 +73,8 @@ public class OrderService {
 	private SlOrderEvaluationMapper slOrderEvaluationMapper;
 	@Autowired
 	private SlUserMapper slUserMapper;
+	@Autowired
+	private SlUserVoucherMapper userVoucherMapper;
 	@Autowired
 	private SnowFlakeApi snowFlakeApi;
 	@Autowired
@@ -183,14 +188,45 @@ public class OrderService {
 	public boolean activeOrder(Long odId){
 		SlOrder order = this.slOrderMapper.selectByPrimaryKey(odId);
 		if(order != null && order.getOdConfirm() == OrderConfirmStatus.UNCONFIRM.getValue()){
+			Double payPrice = order.getOdPayPrice();
+			
+			Double odVoucherPrice = 0.0;
+			List<SlUserVoucher> usedVouchers = new ArrayList<>();
+			
+			List<SlUserVoucher> vouchers = this.userVoucherMapper.getAvailVouchers(order.getOdUid(), order.getPjId(), System.currentTimeMillis());
+			if(CollectionUtils.isNotEmpty(vouchers)){
+				for(SlUserVoucher vo : vouchers){
+					odVoucherPrice += vo.getUvAmount();
+					usedVouchers.add(vo);
+					
+					if(odVoucherPrice >= payPrice){
+						break;
+					}
+				}
+			}
+			
+			odVoucherPrice = FloatUtil.toFix(odVoucherPrice, 2);
+			
+			if(odVoucherPrice > payPrice){
+				odVoucherPrice = payPrice;
+			}
+			payPrice -= odVoucherPrice;
+			
+			
 			SlOrder upt = new SlOrder();
 			upt.setOdConfirm(OrderConfirmStatus.CONFIRMED.getValue());
+			upt.setOdPayPrice(payPrice);
+			upt.setOdVoucherPrice(odVoucherPrice);
 			upt.setUptTs(System.currentTimeMillis());
 			
 			Example example = new Example(SlOrder.class);
 		    example.createCriteria().andEqualTo("odId", odId).andEqualTo("odConfirm", OrderConfirmStatus.UNCONFIRM.getValue());
 		    
 			if(this.slOrderMapper.updateByExampleSelective(upt, example) == 1){
+				if(CollectionUtils.isNotEmpty(usedVouchers)){
+					this.updateVoucherUsed(usedVouchers);
+				}
+				
 				OrderConfirmedMsg msg = new OrderConfirmedMsg(order.getOdUid(), order.getOdId());
 				
 				this.template.convertAndSend(this.websocketExchange.getName(), "", msg);
@@ -226,30 +262,38 @@ public class OrderService {
 	    
 	    List<SlOrder> data = this.slOrderMapper.selectByExample(example);
 	    if(CollectionUtils.isNotEmpty(data)){
-	    	SlOrder order = data.get(0);
-	    	
-	    	List<SlProduct> products = this.slOrderProductMapper.getProductFromOrder(order.getOdId());
-	    	
-	    	SlUser barber = this.slUserMapper.selectByPrimaryKey(order.getOdBarberUid());
-	    	if(barber == null){
-	    		return null;
-	    	}
-	    	
-	    	SlProject project = this.slProjectMapper.selectByPrimaryKey(order.getPjId());
-	    	if(project == null){
-	    		return null;
-	    	}
-	    	
-	    	return this.getInfo(
-	    			order, 
-	    			barber,
-	    			project,
-	    			products,
-	    			null);
+	    	return this.getOrderInfo(data.get(0));
 	    	
 	    }else{
 	    	return null;
 	    }
+	}
+	
+	public OrderInfo getOrderInfo(Long odId){
+		SlOrder order = this.slOrderMapper.selectByPrimaryKey(odId);
+		
+		return order != null ? this.getOrderInfo(order) : null;
+	}
+	
+	private OrderInfo getOrderInfo(SlOrder order){
+		List<SlProduct> products = this.slOrderProductMapper.getProductFromOrder(order.getOdId());
+    	
+    	SlUser barber = this.slUserMapper.selectByPrimaryKey(order.getOdBarberUid());
+    	if(barber == null){
+    		return null;
+    	}
+    	
+    	SlProject project = this.slProjectMapper.selectByPrimaryKey(order.getPjId());
+    	if(project == null){
+    		return null;
+    	}
+    	
+    	return this.getInfo(
+    			order, 
+    			barber,
+    			project,
+    			products,
+    			null);
 	}
 	
 	private OrderInfo getInfo(SlOrder order, SlUser barber, SlProject project, List<SlProduct> products, List<SlOrderEvaluation> evaList){
@@ -293,10 +337,11 @@ public class OrderService {
 			}
 		}
 		
+		pdPrice = FloatUtil.toFix(pdPrice, 2);
+		pjPrice = FloatUtil.toFix(pjPrice, 2);
 		Double totalPrice = pjPrice + pdPrice;
-		
 		Double disCount = this.getUserDiscount(reservation.getRvUid(), ts);
-		Double payPrice = pjPrice * disCount + pdPrice;
+		Double payPrice = FloatUtil.toFix(pjPrice * disCount, 2) + pdPrice;
 		
 		//create a order which waiting for confirm
 		SlOrder order = new SlOrder(
@@ -357,6 +402,17 @@ public class OrderService {
 		sr.setRvActive(1);
 		
 		this.slReservationMapper.updateByPrimaryKeySelective(sr);
+	}
+	
+	private void updateVoucherUsed(List<SlUserVoucher> usedVouchers){
+		Example example = new Example(SlUserVoucher.class);
+	    example.createCriteria().andIn("uvId", usedVouchers.stream().map(SlUserVoucher::getUvId).collect(Collectors.toSet()));
+	    
+	    SlUserVoucher upt = new SlUserVoucher();
+	    upt.setUptTs(System.currentTimeMillis());
+	    upt.setUvAvailable(0);
+		
+		this.userVoucherMapper.updateByExampleSelective(upt, example);
 	}
 	
 	private Double getUserDiscount(Long uId, Long ts){

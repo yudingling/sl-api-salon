@@ -15,4 +15,9 @@ public interface SlUserVoucherMapper extends MyMapper<SlUserVoucher> {
 			+ " inner join sl_project c on b.pj_id = c.pj_id where a.u_id = #{uId}"
 			+ " and a.uv_available=1 and a.uv_etm >= #{curTs} order by a.crt_ts desc")
 	List<UserVoucherInfoFromDB> getUserVouchers(@Param("uId") Long uId, @Param("curTs") Long curTs);
+	
+	@Select("select a.* from sl_user_voucher a inner join sl_user_voucher_project b on a.uv_id = b.uv_id"
+			+ " where a.u_id = #{uId} and a.uv_available=1 and a.uv_etm >= #{curTs}"
+			+ " and b.pj_id in (#{pjId}, 0) ")
+	List<SlUserVoucher> getAvailVouchers(@Param("uId") Long uId, @Param("pjId") Long pjId, @Param("curTs") Long curTs);
 }

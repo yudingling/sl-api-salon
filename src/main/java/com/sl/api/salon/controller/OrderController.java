@@ -66,8 +66,13 @@ public class OrderController {
 		Long odId = Long.parseLong(odIdStr.toString()) ;
 		
 		Boolean ok = this.orderService.activeOrder(odId);
-		
-		return ok ? ApiResult.success() : ApiResult.error(SApiError.ORDER_CONFIRM_FAILED, "confirm order failed");
+		if(ok){
+			OrderInfo order = this.orderService.getOrderInfo(odId);
+			return new ApiObjectResult<>(order);
+			
+		}else{
+			return ApiResult.error(SApiError.ORDER_CONFIRM_FAILED, "confirm order failed");
+		}
 	}
 	
 	@SuppressWarnings("rawtypes")

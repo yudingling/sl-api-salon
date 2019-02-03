@@ -22,6 +22,7 @@ import com.sl.api.salon.model.OrderInfo;
 import com.sl.api.salon.model.SApiError;
 import com.sl.api.salon.service.OrderService;
 import com.sl.api.salon.service.ReservationService;
+import com.sl.common.model.OrderConfirmStatus;
 import com.sl.common.model.SToken;
 import com.sl.common.model.mq.OrderConfirmedMsg;
 import com.sl.common.model.mq.WebSocketMsg;
@@ -73,6 +74,11 @@ public class CreateOrderHandler extends TextWebSocketHandler {
 	
 	private void sendMsg(WebSocketSession session, OrderConfirmedMsg msg){
 		try {
+			if(OrderConfirmStatus.CONFIRMED.equals(msg.getConfirmed())){
+				OrderInfo orderInfo = this.orderService.getOrderInfo(msg.getOdId());
+				msg.setData(orderInfo);
+			}
+			
 			ApiResult result = new ApiObjectResult<>(msg);
 			session.sendMessage(new TextMessage(JSON.toJSONString(new ResponseData(1, result))));
 		} catch (IOException e) {
