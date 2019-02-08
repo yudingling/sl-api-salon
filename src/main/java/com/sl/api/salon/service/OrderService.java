@@ -90,9 +90,33 @@ public class OrderService {
 		
 		if(CollectionUtils.isNotEmpty(orders)){
 			this.setEvaValue(orders);
+			this.setBarberInfo(orders);
 		}
 		
 		return orders;
+	}
+	
+	private void setBarberInfo(List<HistoryOrder> orders){
+		Set<Long> uIds = orders.stream().map(HistoryOrder::getOdBarberUid).collect(Collectors.toSet());
+		
+		Example example = new Example(SlUser.class);
+	    example.createCriteria().andIn("uId", uIds);
+		
+		List<SlUser> barbers = this.slUserMapper.selectByExample(example);
+		if(CollectionUtils.isNotEmpty(barbers)){
+			Map<Long, SlUser> bbMap = new HashMap<>();
+			barbers.forEach(bb -> {
+				bbMap.put(bb.getuId(), bb);
+			});
+	    	
+	    	for(HistoryOrder od : orders){
+	    		SlUser tmp = bbMap.get(od.getOdBarberUid());
+	    		if(tmp != null){
+	    			od.setOdBarberUnm(tmp.getuNm());
+	    			od.setOdBarberIcon(this.commonService.getIconUrl(tmp));
+	    		}
+	    	}
+		}
 	}
 	
 	private void setEvaValue(List<HistoryOrder> orders){
@@ -116,6 +140,7 @@ public class OrderService {
 	    		SlOrderEvaluation tmp = evaMap.get(od.getOdId());
 	    		if(tmp != null){
 	    			od.setOdEva(tmp.getOdevaVal());
+	    			od.setOdEvaDesc(tmp.getOdevaDesc());
 	    		}
 	    	}
 	    }

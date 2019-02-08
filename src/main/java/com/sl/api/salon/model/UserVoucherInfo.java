@@ -68,6 +68,7 @@ public class UserVoucherInfo implements Serializable {
 	}
 	
 	public void addProject(UserVoucherInfoFromDB info){
-		this.projects.put(info.getPjId(), info.getPjNm());
+		String pjNm = info.getPjId() == 0l ? "all projects" : info.getPjNm();
+		this.projects.put(info.getPjId(), pjNm);
 	}
 }
