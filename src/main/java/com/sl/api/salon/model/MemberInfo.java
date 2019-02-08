@@ -3,6 +3,8 @@ package com.sl.api.salon.model;
 import java.io.Serializable;
 import java.util.List;
 
+import com.sl.common.model.db.SlMsg;
+
 public class MemberInfo implements Serializable {
 	private static final long serialVersionUID = 5794946085391693823L;
 	
@@ -14,6 +16,8 @@ public class MemberInfo implements Serializable {
 	private List<UserVoucherInfo> vouchers;
 	private ReservationInfo reservation;
 	private OrderInfo order;
+	private List<SlMsg> latestMsgs;
+	private Integer unReadMsgCount;
 	
 	public Long getuId() {
 		return uId;
@@ -63,6 +67,18 @@ public class MemberInfo implements Serializable {
 	public void setOrder(OrderInfo order) {
 		this.order = order;
 	}
+	public List<SlMsg> getLatestMsgs() {
+		return latestMsgs;
+	}
+	public void setLatestMsgs(List<SlMsg> latestMsgs) {
+		this.latestMsgs = latestMsgs;
+	}
+	public Integer getUnReadMsgCount() {
+		return unReadMsgCount;
+	}
+	public void setUnReadMsgCount(Integer unReadMsgCount) {
+		this.unReadMsgCount = unReadMsgCount;
+	}
 	
 	public MemberInfo(){
 		super();
@@ -70,7 +86,8 @@ public class MemberInfo implements Serializable {
 	
 	public MemberInfo(Long uId, String uNm, String uIcon, String uPhone,
 			UserLevelInfo levelInfo, List<UserVoucherInfo> vouchers,
-			ReservationInfo reservation, OrderInfo order) {
+			ReservationInfo reservation, OrderInfo order,
+			List<SlMsg> latestMsgs, Integer unReadMsgCount) {
 		super();
 		this.uId = uId;
 		this.uNm = uNm;
@@ -80,5 +97,7 @@ public class MemberInfo implements Serializable {
 		this.vouchers = vouchers;
 		this.reservation = reservation;
 		this.order = order;
+		this.latestMsgs = latestMsgs;
+		this.unReadMsgCount = unReadMsgCount;
 	}
 }

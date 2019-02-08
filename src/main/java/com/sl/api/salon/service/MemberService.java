@@ -9,6 +9,9 @@ import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import tk.mybatis.mapper.entity.Example;
+
+import com.sl.api.salon.mapper.SlMsgMapper;
 import com.sl.api.salon.mapper.SlUserLevelMapper;
 import com.sl.api.salon.mapper.SlUserMapper;
 import com.sl.api.salon.mapper.SlUserVoucherMapper;
@@ -17,6 +20,7 @@ import com.sl.api.salon.model.UserLevelInfo;
 import com.sl.api.salon.model.UserVoucherInfo;
 import com.sl.api.salon.model.UserVoucherInfoFromDB;
 import com.sl.common.model.SToken;
+import com.sl.common.model.db.SlMsg;
 import com.sl.common.model.db.SlUser;
 
 @Service
@@ -28,11 +32,15 @@ public class MemberService {
 	@Autowired
 	private SlUserLevelMapper slUserLevelMapper;
 	@Autowired
+	private SlMsgMapper msgMapper;
+	@Autowired
 	private CommonService commonService;
 	@Autowired
 	private OrderService orderService;
 	@Autowired
 	private ReservationService reservationService;
+	@Autowired
+	private MsgService msgService;
 	
 	public MemberInfo getInfo(SToken token){
 		long ts = System.currentTimeMillis();
@@ -51,7 +59,16 @@ public class MemberService {
 				CollectionUtils.isNotEmpty(levels) ? levels.get(0) : null, 
 				this.getVouchers(vouchers),
 				this.reservationService.getCurrentReservation(token),
-				this.orderService.getCurrentOrder(token));
+				this.orderService.getCurrentOrder(token),
+				this.msgService.getMsgs(token, false, 0, 2),
+				this.getUnReadMsgCount(token));
+	}
+	
+	private Integer getUnReadMsgCount(SToken token){
+		Example example = new Example(SlMsg.class);
+	    example.createCriteria().andEqualTo("uId", token.getUserId()).andEqualTo("msgReaded", 0);
+	    
+	    return this.msgMapper.selectCountByExample(example);
 	}
 	
 	private List<UserVoucherInfo> getVouchers(List<UserVoucherInfoFromDB> vouchers){
