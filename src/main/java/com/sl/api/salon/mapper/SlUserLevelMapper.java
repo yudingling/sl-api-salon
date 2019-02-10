@@ -11,7 +11,7 @@ import com.zeasn.common.mybatis.MyMapper;
 
 public interface SlUserLevelMapper extends MyMapper<SlUserLevel> {
 	
-	@Select("select a.level_id, a.ul_discount, b.level_nm from sl_user_level a inner join sl_level b on a.level_id = b.level_id and a.u_id = #{uId}"
+	@Select("select a.level_id, a.ul_discount, a.ul_etm, b.level_nm from sl_user_level a inner join sl_level b on a.level_id = b.level_id and a.u_id = #{uId}"
 			+ " and a.ul_available=1 and a.ul_etm >= #{curTs} order by a.crt_ts desc")
 	List<UserLevelInfo> getUserLevel(@Param("uId") Long uId, @Param("curTs") Long curTs);
 }

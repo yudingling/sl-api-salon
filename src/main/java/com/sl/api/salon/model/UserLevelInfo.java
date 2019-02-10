@@ -8,6 +8,7 @@ public class UserLevelInfo implements Serializable {
 	private Long levelId;
 	private String levelNm;
 	private Double ulDiscount;
+	private Long ulEtm;
 	
 	public Long getLevelId() {
 		return levelId;
@@ -28,15 +29,22 @@ public class UserLevelInfo implements Serializable {
 		this.ulDiscount = ulDiscount;
 	}
 	
+	public Long getUlEtm() {
+		return ulEtm;
+	}
+	public void setUlEtm(Long ulEtm) {
+		this.ulEtm = ulEtm;
+	}
 	public UserLevelInfo(){
 		super();
 	}
 	
-	public UserLevelInfo(Long levelId, String levelNm, Double ulDiscount) {
+	public UserLevelInfo(Long levelId, String levelNm, Double ulDiscount, Long ulEtm) {
 		super();
 		this.levelId = levelId;
 		this.levelNm = levelNm;
 		this.ulDiscount = ulDiscount;
+		this.ulEtm = ulEtm;
 	}
 	
 }
