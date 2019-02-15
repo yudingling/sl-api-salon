@@ -23,6 +23,7 @@ import com.sl.api.salon.mapper.SlProjectMapper;
 import com.sl.api.salon.mapper.SlReservationMapper;
 import com.sl.api.salon.mapper.SlReservationProductMapper;
 import com.sl.api.salon.mapper.SlShopMapper;
+import com.sl.api.salon.mapper.SlShopServiceMapper;
 import com.sl.api.salon.mapper.SlUserMapper;
 import com.sl.api.salon.model.BarberInfo;
 import com.sl.api.salon.model.BarberProject;
@@ -63,6 +64,8 @@ public class ReservationService {
 	@Autowired
 	private SlBarberProjectMapper slBarberProjectMapper;
 	@Autowired
+	private SlShopServiceMapper shopServiceMapper;
+	@Autowired
 	private SnowFlakeApi snowFlakeApi;
 	@Autowired
 	private BarberService barberService;
@@ -70,6 +73,13 @@ public class ReservationService {
 	private CommonService commonService;
 	@Autowired
 	private DistributedLock distributedLock;
+	
+	public boolean isShopServiced(Long shopId){
+		//still available in 5 days.
+		Long endTs = System.currentTimeMillis() + 432000000;
+		
+		return this.shopServiceMapper.getServicedShop(shopId, endTs) > 0;
+	}
 	
 	public boolean hasReservation(SToken token){
 		Example example = new Example(SlReservation.class);

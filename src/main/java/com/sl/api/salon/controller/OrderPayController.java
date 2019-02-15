@@ -7,38 +7,40 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.sl.api.salon.model.SApiError;
 import com.sl.api.salon.model.WePayOrderInfo;
-import com.sl.api.salon.service.LevelService;
+import com.sl.api.salon.service.OrderService;
 import com.sl.api.salon.service.WePayService;
 import com.sl.common.filter.FilterHttpServletRequest;
-import com.sl.common.model.db.SlUserLevelOrder;
+import com.sl.common.model.db.SlOrder;
 import com.zeasn.common.model.result.ApiError;
 import com.zeasn.common.model.result.ApiObjectResult;
 import com.zeasn.common.model.result.ApiResult;
 
 @RestController
-@RequestMapping("/api/levelup")
-public class LevelUpController {
+@RequestMapping("/api/payorder")
+public class OrderPayController {
 	@Autowired
-	private LevelService levelService;
+	private OrderService orderService;
 	@Autowired
 	private WePayService wePayService;
 	
 	@RequestMapping(method = RequestMethod.POST)
-	public ApiResult createOrder(@RequestParam Long levelId, FilterHttpServletRequest request){
-		Assert.notNull(levelId, "levelId should not be null or empty");
+	public ApiResult createOrder(@RequestParam Long odId, FilterHttpServletRequest request){
+		Assert.notNull(odId, "odId should not be null or empty");
 		
-		SlUserLevelOrder order = this.levelService.createLevelUpOrder(request.getToken(), levelId);
+		SlOrder order = this.orderService.getOrderForPay(odId, request.getToken());
 		if(order == null){
-			throw new IllegalArgumentException("level up failed.");
-		}
-		
-		WePayOrderInfo payOrder = this.wePayService.payOrder(order, request.getToken());
-		if(payOrder != null){
-			return new ApiObjectResult<>(payOrder);
+			return ApiResult.error(SApiError.ORDER_PAID_FAILED, "order cancelled or already paied.");
 			
 		}else{
-			return ApiResult.error(ApiError.INTERNAL_ERROR, "create wepay order failed.");
+			WePayOrderInfo payOrder = this.wePayService.payOrder(order, request.getToken());
+			if(payOrder != null){
+				return new ApiObjectResult<>(payOrder);
+				
+			}else{
+				return ApiResult.error(ApiError.INTERNAL_ERROR, "create wepay order failed.");
+			}
 		}
 	}
 }

@@ -294,6 +294,19 @@ public class OrderService {
 	    }
 	}
 	
+	public SlOrder getOrderForPay(Long odId, SToken token){
+		Example example = new Example(SlOrder.class);
+	    example.createCriteria().andEqualTo("odId", odId).andEqualTo("odUid", token.getUserId()).andEqualTo("odPaied", 0).andEqualTo("odConfirm", OrderConfirmStatus.CONFIRMED.getValue());
+	    
+	    List<SlOrder> data = this.slOrderMapper.selectByExample(example);
+	    if(CollectionUtils.isNotEmpty(data)){
+	    	return data.get(0);
+	    	
+	    }else{
+	    	return null;
+	    }
+	}
+	
 	public OrderInfo getOrderInfo(Long odId){
 		SlOrder order = this.slOrderMapper.selectByPrimaryKey(odId);
 		

@@ -1,6 +1,6 @@
 package com.sl.api.salon.controller;
 
-import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
@@ -20,7 +20,7 @@ public class TestController {
 	private OrderService orderService;
 	
 	@RequestMapping(value = "/confirmOrder", method = RequestMethod.GET)
-	public ApiResult update(@RequestParam Long odId, ServletRequest request){
+	public ApiResult update(@RequestParam Long odId, HttpServletRequest request){
 		Assert.notNull(odId, "odId should not be null or empty");
 		
 		Boolean ok = this.orderService.activeOrder(odId);

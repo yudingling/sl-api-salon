@@ -146,3 +146,6 @@ mybatis.configuration.mapUnderscoreToCamelCase: true
 
 salon:
   file: http://10.8.10.100:61002
+  api: https://seeklon.com
+  wepayApiKey: 3cbaac0fff4849c4929784007042b69d
+  wepayMchId: 1525703341
