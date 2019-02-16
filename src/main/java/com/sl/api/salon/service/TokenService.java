@@ -42,6 +42,7 @@ import com.zeasn.common.util.HttpClientUtil;
 @Service
 public class TokenService implements IWriteBack<Object> {
 	private static final long REDIS_EXPIRESECONDS_TOKEN = 86400; //expire in 24 hours
+	private static final long REDIS_EXPIRESECONDS_NORMALUSER_TOKEN = 432000; //expire in 24 * 5 hours
 	
 	@Autowired
 	private ObjectRedisApi objRedisApi;
@@ -171,6 +172,14 @@ public class TokenService implements IWriteBack<Object> {
 		return CollectionUtils.isNotEmpty(list) ? list.get(0) : null;
 	}
 	
+	public SlUser getNormalUser(String phone){
+		Example example = new Example(SlUser.class);
+	    example.createCriteria().andEqualTo("uThirdid", phone).andEqualTo("uActive", 1).andEqualTo("uDisabled", 0);
+	    
+	    List<SlUser> users = this.slUserMapper.selectByExample(example);
+	    return CollectionUtils.isNotEmpty(users) ? users.get(0) : null;
+	}
+	
 	@Transactional(rollbackFor = Exception.class)
 	public UserForToken registerUser(String brandId, String unionId, String nickName, String avatarUrl, String phoneNumber){
 		if(!this.slBrandMapper.existsWithPrimaryKey(brandId)){
@@ -203,6 +212,16 @@ public class TokenService implements IWriteBack<Object> {
 		
 		SToken tk = new SToken(user, session.getSessionKey(), session.getOpenId());
 		this.objRedisApi.set(key, tk, REDIS_EXPIRESECONDS_TOKEN, 600);
+		
+		return tokenStr;
+	}
+	
+	public String createToken(SlUser user){
+		String tokenStr = this.snowFlakeApi.nextStringId();
+		String key = String.format("%s%s", Constant.REDIS_PREFIX_TOKEN, tokenStr);
+		
+		SToken tk = new SToken(user.getBdId(), user.getuId(), UserType.valueOf(user.getRoleId()));
+		this.objRedisApi.set(key, tk, REDIS_EXPIRESECONDS_NORMALUSER_TOKEN, 600);
 		
 		return tokenStr;
 	}

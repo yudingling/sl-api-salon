@@ -14,8 +14,10 @@ import com.sl.api.salon.model.SigninResult;
 import com.sl.api.salon.model.WeChatSession;
 import com.sl.api.salon.service.TokenService;
 import com.sl.common.model.UserForToken;
+import com.sl.common.model.db.SlUser;
 import com.zeasn.common.model.result.ApiObjectResult;
 import com.zeasn.common.model.result.ApiResult;
+import com.zeasn.common.util.Common;
 
 @RestController
 @RequestMapping("/signin")
@@ -59,7 +61,17 @@ public class SigninController {
 		Assert.hasText(phoneNumber, "phoneNumber should not be null or empty");
 		Assert.hasText(password, "password should not be null or empty");
 		
+		SlUser user = this.tokenService.getNormalUser(phoneNumber);
+		if(user == null){
+			return ApiResult.error(SApiError.USER_UNEXISTS, "user not exist");
+		}
 		
-		return new ApiObjectResult<>(null);
+		if(Common.md5(password).equals(user.getuPwd())){
+			String tokenStr = this.tokenService.createToken(user);
+			return new ApiObjectResult<>(tokenStr);
+			
+		}else{
+			return ApiResult.error(SApiError.USER_PWD_ERROR, "password error");
+		}
 	}
 }
