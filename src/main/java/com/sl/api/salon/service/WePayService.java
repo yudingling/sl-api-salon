@@ -35,6 +35,8 @@ public class WePayService {
 	private String wepayApiKey;
 	@Value("${salon.wepayMchId}")
 	private String wepayMchId;
+	@Value("${salon.parentWechatAppId}")
+	private String parentWechatAppId;
 	
 	@Autowired
 	private SlBrandWechatMapper brandWechatMapper;
@@ -66,7 +68,7 @@ public class WePayService {
 		
 		int feeInFen = (int)(trade.getWpayPrice() * 100);
 		
-		String prepayId = this.prepay(bdw.getBdwAppid(), shopMchId, trade.getWpayId(), feeInFen, "订单支付");
+		String prepayId = this.prepay(this.parentWechatAppId, this.wepayMchId, bdw.getBdwAppid(), shopMchId, token.getWeChatOpenId(), trade.getWpayId(), feeInFen, "订单支付");
 		if(StringUtils.isEmpty(prepayId)){
 			return null;
 		}
@@ -90,7 +92,7 @@ public class WePayService {
 		
 		int feeInFen = (int)(trade.getWpayPrice() * 100);
 		
-		String prepayId = this.prepay(bdw.getBdwAppid(), bdw.getBdwWechatpayId(), trade.getWpayId(), feeInFen, "会员升级");
+		String prepayId = this.prepay(this.parentWechatAppId, this.wepayMchId, bdw.getBdwAppid(), bdw.getBdwWechatpayId(), token.getWeChatOpenId(), trade.getWpayId(), feeInFen, "会员升级");
 		if(StringUtils.isEmpty(prepayId)){
 			return null;
 		}
@@ -116,20 +118,22 @@ public class WePayService {
 				sign);
 	}
 	
-	private String prepay(String appId, String shopMchId, Long tradeId, int feeInFen, String description){
+	private String prepay(String appId, String mchId, String subAppId, String subMchId, String subOpenId, Long tradeId, int feeInFen, String description){
 		String notifyUrl =  apiDomain + "/wepay/callback";
 		
 		SortedMap<String, String> packageParams = new TreeMap<>();
+		packageParams.put("appid", appId);
+		packageParams.put("mch_id", mchId);
+		packageParams.put("sub_appid", subAppId);
+		packageParams.put("sub_mch_id", subMchId);
+		packageParams.put("nonce_str", WePayUtil.getNonceString());
 		packageParams.put("body", description);
 		packageParams.put("out_trade_no", tradeId + "");
 		packageParams.put("total_fee", feeInFen + "");
-		packageParams.put("appid", appId);
-		packageParams.put("mch_id", this.wepayMchId);
-		packageParams.put("sub_mch_id", shopMchId);
-		packageParams.put("nonce_str", WePayUtil.getNonceString());
 		packageParams.put("spbill_create_ip", "192.168.1.1");
 		packageParams.put("notify_url", notifyUrl);
 		packageParams.put("trade_type", "JSAPI");
+		packageParams.put("sub_openid", subOpenId);
 		
 		String sign = WePayUtil.createSign(packageParams, this.wepayApiKey);
 		packageParams.put("sign", sign);

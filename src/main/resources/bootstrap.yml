@@ -149,3 +149,4 @@ salon:
   api: https://seeklon.com
   wepayApiKey: 3cbaac0fff4849c4929784007042b69d
   wepayMchId: 1525703341
+  parentWechatAppId: wx5e5b61c01e67873e

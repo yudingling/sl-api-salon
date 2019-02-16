@@ -201,7 +201,7 @@ public class TokenService implements IWriteBack<Object> {
 		String tokenStr = this.snowFlakeApi.nextStringId();
 		String key = String.format("%s%s", Constant.REDIS_PREFIX_TOKEN, tokenStr);
 		
-		SToken tk = new SToken(user, session.getSessionKey());
+		SToken tk = new SToken(user, session.getSessionKey(), session.getOpenId());
 		this.objRedisApi.set(key, tk, REDIS_EXPIRESECONDS_TOKEN, 600);
 		
 		return tokenStr;
