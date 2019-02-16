@@ -42,7 +42,7 @@ public class EvaluationService {
 	
 	private SlOrder getOrder(SToken token, Long odId){
 		Example example = new Example(SlOrder.class);
-	    example.createCriteria().andEqualTo("odId", odId).andEqualTo("odUid", token.getUserId()).andEqualTo("odPaied", 1);
+	    example.createCriteria().andEqualTo("odId", odId).andEqualTo("odUid", token.getUserId());
 	    
 	    List<SlOrder> data = this.slOrderMapper.selectByExample(example);
 	    return CollectionUtils.isNotEmpty(data) ? data.get(0) : null;
