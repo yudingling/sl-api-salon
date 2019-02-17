@@ -44,7 +44,7 @@ public class ReservationController {
 		
 		SToken token = request.getToken();
 		
-		if(this.reservationService.isShopServiced(shopId)){
+		if(!this.reservationService.isShopServiced(shopId)){
 			return ApiResult.error(SApiError.SHOP_OUT_OF_SERVICE, "shop is out of service!");
 		}
 		
