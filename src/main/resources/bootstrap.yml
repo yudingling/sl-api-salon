@@ -145,8 +145,8 @@ spring:
 mybatis.configuration.mapUnderscoreToCamelCase: true
 
 salon:
-  file: http://10.8.10.100:61002
-  api: https://seeklon.com
+  file: https://api.salon.hfsys.cn/slfile
+  api: https://api.salon.hfsys.cn/slapi
   wepayApiKey: 3cbaac0fff4849c4929784007042b69d
   wepayMchId: 1525703341
   parentWechatAppId: wx5e5b61c01e67873e
