@@ -27,4 +27,13 @@ public class TestController {
 		
 		return ok ? ApiResult.success() : ApiResult.error(SApiError.ORDER_CONFIRM_FAILED, "confirm order failed");
 	}
+	
+	@RequestMapping(value = "/confirmOrder/fromslWeb", method = RequestMethod.GET)
+	public ApiResult fromslWeb(@RequestParam Long odId, HttpServletRequest request){
+		Assert.notNull(odId, "odId should not be null or empty");
+		
+		Boolean ok = this.orderService.activeOrderFromSlWeb(odId);
+		
+		return ok ? ApiResult.success() : ApiResult.error(SApiError.ORDER_CONFIRM_FAILED, "confirm order failed");
+	}
 }

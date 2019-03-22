@@ -209,6 +209,14 @@ public class OrderService {
 		return order != null ? this.getInfo(order, barber, project, products, null) : null;
 	}
 	
+	public boolean activeOrderFromSlWeb(Long odId){
+		SlOrder order = this.slOrderMapper.selectByPrimaryKey(odId);
+		OrderConfirmedMsg msg = new OrderConfirmedMsg(order.getOdUid(), order.getOdId());
+		
+		this.template.convertAndSend(this.websocketExchange.getName(), "", msg);
+		return true;
+	}
+	
 	@Transactional(rollbackFor = Exception.class)
 	public boolean activeOrder(Long odId){
 		SlOrder order = this.slOrderMapper.selectByPrimaryKey(odId);
