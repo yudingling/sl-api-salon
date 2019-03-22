@@ -18,6 +18,7 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.sl.api.salon.model.OrderInfo;
 import com.sl.api.salon.model.SApiError;
 import com.sl.api.salon.service.OrderService;
@@ -42,6 +43,12 @@ public class CreateOrderHandler extends TextWebSocketHandler {
 	private ReservationService reservationService;
 	
 	private Map<Long, Map<String, WebSocketSession>> webSocketMap = new ConcurrentHashMap<>();
+	
+	private SerializerFeature[] jsonFeatures = new SerializerFeature[]{
+			SerializerFeature.WriteNonStringValueAsString,
+			SerializerFeature.WriteNonStringKeyAsString,
+			SerializerFeature.WriteMapNullValue,
+		    SerializerFeature.WriteBigDecimalAsPlain};
 	
 	/**
 	 * use default container factory defined in @MqAutoConfiguration which concurrency is set to cpu nums.
@@ -80,7 +87,7 @@ public class CreateOrderHandler extends TextWebSocketHandler {
 			}
 			
 			ApiResult result = new ApiObjectResult<>(msg);
-			session.sendMessage(new TextMessage(JSON.toJSONString(new ResponseData(1, result))));
+			session.sendMessage(new TextMessage(JSON.toJSONString(new ResponseData(1, result), jsonFeatures)));
 		} catch (IOException e) {
 			log.error(RuntimeLog.build(msg, "websocket sending failed: " + e.getMessage()), e);
 		}
@@ -138,7 +145,7 @@ public class CreateOrderHandler extends TextWebSocketHandler {
 				result = ApiResult.error(ApiError.ARGUMENT_ERROR, "create order failed due to error arguments");
 			}
 			
-			session.sendMessage(new TextMessage(JSON.toJSONString(new ResponseData(0, result))));
+			session.sendMessage(new TextMessage(JSON.toJSONString(new ResponseData(0, result), jsonFeatures)));
 		}
 	}
 	
